@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
+
 <head>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -8,56 +10,116 @@
 
 <style>
 
-body{
-    margin:10px;
-    font-family:Arial,sans-serif;
-    background:#eef2f5;
+* {
+    box-sizing: border-box;
 }
 
-h1{
-    text-align:center;
+body {
+    margin: 10px;
+    font-family: Arial, sans-serif;
+    background: #eef2f5;
+    color: #171717;
 }
 
-.spot{
-    background:white;
-    border-radius:15px;
-    padding:10px;
-    margin-bottom:10px;
-    box-shadow:0 2px 6px rgba(0,0,0,.15);
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin: 10px 0 15px;
 }
 
-.spot-name{
-    text-align:center;
-    font-size:20px;
-    font-weight:bold;
+.dashboard {
+    width: 100%;
+    max-width: 520px;
+    margin: auto;
 }
 
-svg{
-    display:block;
-    margin:auto;
-    width:180px;
-    height:180px;
+.spot {
+    background: white;
+    border-radius: 15px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
 }
 
-.avg{
-    font-size:28px;
-    font-weight:bold;
-    fill:#0066cc;
+.spot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 25px;
+    margin-bottom: 2px;
 }
 
-.gust{
-    font-size:18px;
-    fill:#666;
+.spot-name {
+    font-size: 18px;
+    font-weight: bold;
 }
 
-.arrow{
-    stroke:black;
-    stroke-width:4;
+.update-time {
+    font-size: 12px;
+    color: #777;
+    text-align: right;
 }
 
-.coast{
-    stroke:#ff00ff;
-    stroke-width:3;
+.compass {
+    display: block;
+    width: 165px;
+    height: 165px;
+    margin: auto;
+}
+
+.avg {
+    font-size: 28px;
+    font-weight: bold;
+    fill: #0066cc;
+    paint-order: stroke;
+    stroke: white;
+    stroke-width: 3px;
+}
+
+.gust {
+    font-size: 17px;
+    fill: #666;
+    paint-order: stroke;
+    stroke: white;
+    stroke-width: 3px;
+}
+
+.arrow {
+    stroke: #111;
+    stroke-width: 4;
+    stroke-linecap: round;
+}
+
+.coast {
+    stroke: #ff00ff;
+    stroke-width: 3;
+}
+
+.wind-arrow-head {
+    fill: #111;
+}
+
+.error-message {
+    text-align: center;
+    color: #a00000;
+    font-size: 12px;
+    min-height: 15px;
+    margin-top: 2px;
+}
+
+@media (min-width: 800px) {
+
+    .dashboard {
+        max-width: 1020px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .spot {
+        margin-bottom: 0;
+    }
+
 }
 
 </style>
@@ -68,356 +130,801 @@ svg{
 
 <h1>🌬 Wind Dashboard</h1>
 
-<!-- BALIZA 2 -->
+<main class="dashboard">
 
-<div class="spot">
+    <!-- BALIZA 2 -->
 
-<div class="spot-name">BALIZA 2</div>
+    <section class="spot">
 
-<svg viewBox="0 0 200 200">
+        <div class="spot-header">
 
-<circle cx="100" cy="100" r="90"
-fill="#efe5d4"
-stroke="#2f5fd0"
-stroke-width="2"/>
+            <div class="spot-name">
+                BALIZA 2
+            </div>
 
-<path d="M0 200 L140 200 L60 0 L0 0 Z"
-fill="#c7f3ef"/>
+            <div id="balizaUpdate" class="update-time">
+                --.--.-- --:--
+            </div>
 
-<line x1="60" y1="0"
-      x2="140" y2="200"
-      class="coast"/>
+        </div>
 
-<text id="balizaAvg"
-      x="100"
-      y="82"
-      text-anchor="middle"
-      class="avg">--</text>
+        <svg class="compass" viewBox="0 0 200 200">
 
-<line x1="100" y1="100"
-      x2="60" y2="65"
-      class="arrow"/>
+            <defs>
 
-<polygon points="60,65 67,62 63,72"
-fill="black"/>
+                <marker
+                    id="arrowHeadBaliza"
+                    markerWidth="8"
+                    markerHeight="8"
+                    refX="6"
+                    refY="3"
+                    orient="auto"
+                    markerUnits="strokeWidth">
 
-<text id="balizaGust"
-      x="100"
-      y="128"
-      text-anchor="middle"
-      class="gust">--</text>
+                    <path
+                        d="M0,0 L0,6 L7,3 z"
+                        class="wind-arrow-head"/>
 
-</svg>
+                </marker>
 
-</div>
+            </defs>
 
+            <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="#efe5d4"
+                stroke="#2f5fd0"
+                stroke-width="2"/>
 
-<!-- P.RAINHA -->
+            <path
+                d="M0 200 L140 200 L60 0 L0 0 Z"
+                fill="#c7f3ef"/>
 
-<div class="spot">
+            <line
+                x1="60"
+                y1="0"
+                x2="140"
+                y2="200"
+                class="coast"/>
 
-<div class="spot-name">P.RAINHA</div>
+            <line
+                id="arrowBaliza"
+                x1="100"
+                y1="100"
+                x2="100"
+                y2="55"
+                class="arrow"
+                marker-end="url(#arrowHeadBaliza)"/>
 
-<svg viewBox="0 0 200 200">
+            <text
+                id="balizaAvg"
+                x="100"
+                y="83"
+                text-anchor="middle"
+                class="avg">
+                --
+            </text>
 
-<circle cx="100" cy="100" r="90"
-fill="#efe5d4"
-stroke="#2f5fd0"
-stroke-width="2"/>
+            <text
+                id="balizaGust"
+                x="100"
+                y="128"
+                text-anchor="middle"
+                class="gust">
+                --
+            </text>
 
-<path d="M200 0 L200 200 L90 200 L140 0 Z"
-fill="#c7f3ef"/>
+        </svg>
 
-<line x1="140" y1="0"
-      x2="90" y2="200"
-      class="coast"/>
+        <div id="balizaError" class="error-message"></div>
 
-<text id="prainhaAvg"
-      x="100"
-      y="82"
-      text-anchor="middle"
-      class="avg">--</text>
-
-<line id="arrowPrainha"
-      x1="100"
-      y1="100"
-      x2="100"
-      y2="55"
-      class="arrow"/>
-
-
-</svg>
-
-</div>
-
-
-<!-- LAVRADIO -->
-
-<div class="spot">
-
-<div class="spot-name">LAVRADIO</div>
-
-<svg viewBox="0 0 200 200">
-
-<circle cx="100" cy="100" r="90"
-fill="#efe5d4"
-stroke="#2f5fd0"
-stroke-width="2"/>
-
-<path d="M200 0 L200 200 L130 200 L60 0 Z"
-fill="#c7f3ef"/>
-
-<line x1="60" y1="0"
-      x2="130" y2="200"
-      class="coast"/>
-
-<text id="lavradioAvg"
-      x="100"
-      y="82"
-      text-anchor="middle"
-      class="avg">--</text>
-
-<line id="arrowLavradio"
-      x1="100"
-      y1="100"
-      x2="145"
-      y2="65"
-      class="arrow"/>
+    </section>
 
 
-</svg>
+    <!-- P.RAINHA -->
 
-</div>
+    <section class="spot">
+
+        <div class="spot-header">
+
+            <div class="spot-name">
+                P.RAINHA
+            </div>
+
+            <div id="prainhaUpdate" class="update-time">
+                --.--.-- --:--
+            </div>
+
+        </div>
+
+        <svg class="compass" viewBox="0 0 200 200">
+
+            <defs>
+
+                <marker
+                    id="arrowHeadPrainha"
+                    markerWidth="8"
+                    markerHeight="8"
+                    refX="6"
+                    refY="3"
+                    orient="auto"
+                    markerUnits="strokeWidth">
+
+                    <path
+                        d="M0,0 L0,6 L7,3 z"
+                        class="wind-arrow-head"/>
+
+                </marker>
+
+            </defs>
+
+            <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="#efe5d4"
+                stroke="#2f5fd0"
+                stroke-width="2"/>
+
+            <path
+                d="M200 0 L200 200 L90 200 L140 0 Z"
+                fill="#c7f3ef"/>
+
+            <line
+                x1="140"
+                y1="0"
+                x2="90"
+                y2="200"
+                class="coast"/>
+
+            <line
+                id="arrowPrainha"
+                x1="100"
+                y1="100"
+                x2="100"
+                y2="55"
+                class="arrow"
+                marker-end="url(#arrowHeadPrainha)"/>
+
+            <text
+                id="prainhaAvg"
+                x="100"
+                y="88"
+                text-anchor="middle"
+                class="avg">
+                --
+            </text>
+
+        </svg>
+
+        <div id="prainhaError" class="error-message"></div>
+
+    </section>
+
+
+    <!-- LAVRADIO -->
+
+    <section class="spot">
+
+        <div class="spot-header">
+
+            <div class="spot-name">
+                LAVRADIO
+            </div>
+
+            <div id="lavradioUpdate" class="update-time">
+                --.--.-- --:--
+            </div>
+
+        </div>
+
+        <svg class="compass" viewBox="0 0 200 200">
+
+            <defs>
+
+                <marker
+                    id="arrowHeadLavradio"
+                    markerWidth="8"
+                    markerHeight="8"
+                    refX="6"
+                    refY="3"
+                    orient="auto"
+                    markerUnits="strokeWidth">
+
+                    <path
+                        d="M0,0 L0,6 L7,3 z"
+                        class="wind-arrow-head"/>
+
+                </marker>
+
+            </defs>
+
+            <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="#efe5d4"
+                stroke="#2f5fd0"
+                stroke-width="2"/>
+
+            <path
+                d="M200 0 L200 200 L130 200 L60 0 Z"
+                fill="#c7f3ef"/>
+
+            <line
+                x1="60"
+                y1="0"
+                x2="130"
+                y2="200"
+                class="coast"/>
+
+            <line
+                id="arrowLavradio"
+                x1="100"
+                y1="100"
+                x2="100"
+                y2="55"
+                class="arrow"
+                marker-end="url(#arrowHeadLavradio)"/>
+
+            <text
+                id="lavradioAvg"
+                x="100"
+                y="88"
+                text-anchor="middle"
+                class="avg">
+                --
+            </text>
+
+        </svg>
+
+        <div id="lavradioError" class="error-message"></div>
+
+    </section>
+
+</main>
 
 
 <script>
 
+"use strict";
+
+
+/* =========================================================
+   CONFIGURATION
+========================================================= */
+
+const IPMA_URL =
+    "https://api.ipma.pt/open-data/observation/meteorology/stations/observations.json";
+
+const IPMA_STATIONS = {
+    prainha: "1210773",
+    lavradio: "1210766"
+};
+
+const HIDROMOD_SERIES = {
+    gust: 446,
+    average: 447,
+    direction: 449
+};
+
+
+/* =========================================================
+   OUTILS GÉNÉRAUX
+========================================================= */
+
+function pad2(value) {
+    return String(value).padStart(2, "0");
+}
+
+
+function formatDateObject(date) {
+
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+        return "--.--.-- --:--";
+    }
+
+    return (
+        pad2(date.getDate()) +
+        "." +
+        pad2(date.getMonth() + 1) +
+        "." +
+        String(date.getFullYear()).slice(-2) +
+        " " +
+        pad2(date.getHours()) +
+        ":" +
+        pad2(date.getMinutes())
+    );
+}
+
+
+function formatIPMATimestamp(timestamp) {
+
+    if (!timestamp || typeof timestamp !== "string") {
+        return "--.--.-- --:--";
+    }
+
+    const match = timestamp.match(
+        /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/
+    );
+
+    if (!match) {
+        return "--.--.-- --:--";
+    }
+
+    return (
+        match[3] +
+        "." +
+        match[2] +
+        "." +
+        match[1].slice(-2) +
+        " " +
+        match[4] +
+        ":" +
+        match[5]
+    );
+}
+
+
+function kmhToKnots(kmh) {
+
+    const value = Number(kmh);
+
+    if (!Number.isFinite(value) || value === -99) {
+        return null;
+    }
+
+    return value / 1.852;
+}
+
+
+function displayRoundedValue(elementId, value) {
+
+    const element = document.getElementById(elementId);
+
+    if (!element) {
+        return;
+    }
+
+    element.textContent =
+        Number.isFinite(value)
+            ? Math.round(value)
+            : "--";
+}
+
+
+function setError(elementId, message = "") {
+
+    const element = document.getElementById(elementId);
+
+    if (element) {
+        element.textContent = message;
+    }
+}
+
+
+/* =========================================================
+   DIRECTION DES FLÈCHES
+========================================================= */
+
+/*
+   Les angles représentent la provenance météorologique :
+   0°   = Nord
+   90°  = Est
+   180° = Sud
+   270° = Ouest
+*/
+
+function setDirectionDegrees(lineId, degrees) {
+
+    const arrow = document.getElementById(lineId);
+    const direction = Number(degrees);
+
+    if (!arrow || !Number.isFinite(direction)) {
+        return;
+    }
+
+    const centerX = 100;
+    const centerY = 100;
+    const length = 45;
+
+    const radians =
+        (direction - 90) * Math.PI / 180;
+
+    const endX =
+        centerX + length * Math.cos(radians);
+
+    const endY =
+        centerY + length * Math.sin(radians);
+
+    arrow.setAttribute("x1", centerX);
+    arrow.setAttribute("y1", centerY);
+    arrow.setAttribute("x2", endX.toFixed(2));
+    arrow.setAttribute("y2", endY.toFixed(2));
+}
+
+
+function setIPMADirection(lineId, directionId) {
+
+    const directionDegrees = {
+        1: 0,
+        2: 45,
+        3: 90,
+        4: 135,
+        5: 180,
+        6: 225,
+        7: 270,
+        8: 315,
+        9: 0
+    };
+
+    const degrees =
+        directionDegrees[Number(directionId)];
+
+    if (degrees === undefined) {
+        return;
+    }
+
+    setDirectionDegrees(lineId, degrees);
+}
+
+
+/* =========================================================
+   DONNÉES IPMA
+========================================================= */
+
+function findLatestIPMAObservation(data, stationId) {
+
+    const timestamps =
+        Object.keys(data).sort().reverse();
+
+    for (const timestamp of timestamps) {
+
+        const stationObservation =
+            data[timestamp]?.[stationId];
+
+        if (stationObservation) {
+
+            return {
+                timestamp,
+                observation: stationObservation
+            };
+
+        }
+
+    }
+
+    return null;
+}
+
+
+function updateIPMAStation(
+    stationResult,
+    valueElementId,
+    arrowElementId,
+    updateElementId,
+    errorElementId
+) {
+
+    if (!stationResult) {
+
+        setError(
+            errorElementId,
+            "Aucune observation disponible"
+        );
+
+        return;
+    }
+
+    const { timestamp, observation } =
+        stationResult;
+
+    const windKnots =
+        kmhToKnots(
+            observation.intensidadeVentoKM
+        );
+
+    displayRoundedValue(
+        valueElementId,
+        windKnots
+    );
+
+    if (
+        observation.idDireccVento !== 0 &&
+        observation.idDireccVento !== -99
+    ) {
+
+        setIPMADirection(
+            arrowElementId,
+            observation.idDireccVento
+        );
+
+    }
+
+    document.getElementById(
+        updateElementId
+    ).textContent =
+        formatIPMATimestamp(timestamp);
+
+    setError(errorElementId);
+
+}
+
+
 async function loadIPMA() {
+
+    setError("prainhaError");
+    setError("lavradioError");
 
     try {
 
         const response = await fetch(
-            "https://api.ipma.pt/open-data/observation/meteorology/stations/observations.json"
+            IPMA_URL + "?cache=" + Date.now(),
+            {
+                cache: "no-store"
+            }
         );
+
+        if (!response.ok) {
+            throw new Error(
+                "HTTP IPMA " + response.status
+            );
+        }
 
         const data = await response.json();
 
-        const dates = Object.keys(data);
+        const pRainhaResult =
+            findLatestIPMAObservation(
+                data,
+                IPMA_STATIONS.prainha
+            );
 
-        const lastDate = dates.sort().pop();
+        const lavradioResult =
+            findLatestIPMAObservation(
+                data,
+                IPMA_STATIONS.lavradio
+            );
 
-        console.log("Dernière observation :", lastDate);
+        updateIPMAStation(
+            pRainhaResult,
+            "prainhaAvg",
+            "arrowPrainha",
+            "prainhaUpdate",
+            "prainhaError"
+        );
 
-        const obs = data[lastDate];
+        updateIPMAStation(
+            lavradioResult,
+            "lavradioAvg",
+            "arrowLavradio",
+            "lavradioUpdate",
+            "lavradioError"
+        );
 
-        const pRainha = obs["1210773"];
-        const lavradio = obs["1210766"];
+        console.log(
+            "IPMA P.Rainha :",
+            pRainhaResult
+        );
 
-        console.log("P.Rainha", pRainha);
-        console.log("Lavradio", lavradio);
-
-if (pRainha) {
-
-    console.log(
-        "P.Rainha direction:",
-        pRainha.idDireccVento
-    );
-
-    document.getElementById("prainhaAvg").textContent =
-        Math.round(pRainha.intensidadeVentoKM / 1.852);
-
-    function setDirection(lineId, directionId){
-
-    const angles = {
-        1: 0,
-        2: 45,
-        3: 90,
-        4: 135,
-        5: 180,
-        6: 225,
-        7: 270,
-        8: 315,
-        9: 0
-    };
-
-    const angle = angles[directionId];
-
-    if(angle === undefined) return;
-
-    const arrow = document.getElementById(lineId);
-
-    const centerX = 100;
-    const centerY = 100;
-    const length = 45;
-
-    const radians =
-        (angle - 90) * Math.PI / 180;
-
-    const endX =
-        centerX + length * Math.cos(radians);
-
-    const endY =
-        centerY + length * Math.sin(radians);
-
-    arrow.setAttribute("x1", centerX);
-    arrow.setAttribute("y1", centerY);
-
-    arrow.setAttribute("x2", endX);
-    arrow.setAttribute("y2", endY);
-
-    console.log(
-        lineId,
-        directionId,
-        angle
-    );
-
-};
-
-}
-
-if (lavradio) {
-
-    console.log(
-        "Lavradio direction:",
-        lavradio.idDireccVento
-    );
-
-    document.getElementById("lavradioAvg").textContent =
-        Math.round(lavradio.intensidadeVentoKM / 1.852);
-
-    function setDirection(lineId, directionId){
-
-    const angles = {
-        1: 0,
-        2: 45,
-        3: 90,
-        4: 135,
-        5: 180,
-        6: 225,
-        7: 270,
-        8: 315,
-        9: 0
-    };
-
-    const angle = angles[directionId];
-
-    if(angle === undefined) return;
-
-    const arrow = document.getElementById(lineId);
-
-    const centerX = 100;
-    const centerY = 100;
-    const length = 45;
-
-    const radians =
-        (angle - 90) * Math.PI / 180;
-
-    const endX =
-        centerX + length * Math.cos(radians);
-
-    const endY =
-        centerY + length * Math.sin(radians);
-
-    arrow.setAttribute("x1", centerX);
-    arrow.setAttribute("y1", centerY);
-
-    arrow.setAttribute("x2", endX);
-    arrow.setAttribute("y2", endY);
-
-    console.log(
-        lineId,
-        directionId,
-        angle
-    );
-
-};
-
-}
+        console.log(
+            "IPMA Lavradio :",
+            lavradioResult
+        );
 
     }
-    catch(error) {
+    catch (error) {
 
-        console.error("Erreur IPMA :", error);
+        console.error(
+            "Erreur IPMA :",
+            error
+        );
+
+        setError(
+            "prainhaError",
+            "Erreur de chargement IPMA"
+        );
+
+        setError(
+            "lavradioError",
+            "Erreur de chargement IPMA"
+        );
 
     }
 
 }
 
-function setDirection(lineId, directionId){
 
-    const angles = {
-        1: 0,      // N
-        2: 45,     // NE
-        3: 90,     // E
-        4: 135,    // SE
-        5: 180,    // S
-        6: 225,    // SW
-        7: 270,    // W
-        8: 315,    // NW
-        9: 0
-    };
+/* =========================================================
+   DONNÉES HIDROMOD
+========================================================= */
 
-    const angle = angles[directionId];
+function getHidromodValue(seriesId, data) {
 
-    if(angle === undefined) return;
-
-    const arrow = document.getElementById(lineId);
-
-    arrow.setAttribute(
-    "stroke",
-    "red"
-);
-}
-
-
-async function testHidromod(){
-
-    const now = new Date().toISOString();
-
-const response = await fetch(
-    `https://apss.hidromod.com/AquaSafeServer/rest/GetTimeSerieValueBeforeDateByTimeSerieIds/451,450,448,449,446,447/${now}/?format=json`
-);
-console.log("Hidromod request =", now);
-const direction = getValue(449, data);
-
-console.log(
-    "Direction Baliza =",
-    direction
-);
-
-    const data = await response.json();
-
-    console.log("HIDROMOD", data);
-
-    const avg = getValue(447, data);
-    const gust = getValue(446, data);
-
-    console.log("Vent moyen =", avg);
-    console.log("Rafale =", gust);
-
-    document.getElementById("balizaAvg").textContent =
-        Math.round(avg);
-
-    document.getElementById("balizaGust").textContent =
-        Math.round(gust);
-
-};
-
-function getValue(seriesId, data){
+    if (!Array.isArray(data?.Values)) {
+        return null;
+    }
 
     const item =
         data.Values.find(
-            v => v.TimeSerieId === seriesId
+            value =>
+                Number(value.TimeSerieId) ===
+                Number(seriesId)
         );
 
-    return item ? item.Value : null;
+    if (!item) {
+        return null;
+    }
+
+    const result = Number(item.Value);
+
+    return Number.isFinite(result)
+        ? result
+        : null;
 }
 
-loadIPMA();
-testHidromod();
 
+function parseHidromodDate(dateValue) {
+
+    if (!dateValue) {
+        return null;
+    }
+
+    const match =
+        String(dateValue).match(/Date\((\d+)\)/);
+
+    if (!match) {
+        return null;
+    }
+
+    const milliseconds =
+        Number(match[1]);
+
+    if (!Number.isFinite(milliseconds)) {
+        return null;
+    }
+
+    return new Date(milliseconds);
+}
+
+
+async function loadHidromod() {
+
+    setError("balizaError");
+
+    try {
+
+        const now =
+            new Date().toISOString();
+
+        const url =
+            "https://apss.hidromod.com" +
+            "/AquaSafeServer/rest/" +
+            "GetTimeSerieValueBeforeDateByTimeSerieIds/" +
+            "451,450,448,449,446,447/" +
+            now +
+            "/?format=json";
+
+        console.log(
+            "Requête Hidromod :",
+            url
+        );
+
+        const response = await fetch(
+            url,
+            {
+                cache: "no-store"
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                "HTTP Hidromod " + response.status
+            );
+        }
+
+        const data =
+            await response.json();
+
+        const average =
+            getHidromodValue(
+                HIDROMOD_SERIES.average,
+                data
+            );
+
+        const gust =
+            getHidromodValue(
+                HIDROMOD_SERIES.gust,
+                data
+            );
+
+        const direction =
+            getHidromodValue(
+                HIDROMOD_SERIES.direction,
+                data
+            );
+
+        displayRoundedValue(
+            "balizaAvg",
+            average
+        );
+
+        displayRoundedValue(
+            "balizaGust",
+            gust
+        );
+
+        if (direction !== null) {
+
+            setDirectionDegrees(
+                "arrowBaliza",
+                direction
+            );
+
+        }
+
+        const calculationDate =
+            parseHidromodDate(
+                data.CalculationTime
+            );
+
+        document.getElementById(
+            "balizaUpdate"
+        ).textContent =
+            formatDateObject(calculationDate);
+
+        console.log(
+            "Hidromod Baliza 2 :",
+            {
+                average,
+                gust,
+                direction,
+                calculationDate
+            }
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Erreur Hidromod :",
+            error
+        );
+
+        setError(
+            "balizaError",
+            "Erreur de chargement Hidromod"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CHARGEMENT ET ACTUALISATION
+========================================================= */
+
+async function refreshDashboard() {
+
+    await Promise.allSettled([
+        loadIPMA(),
+        loadHidromod()
+    ]);
+
+}
+
+
+refreshDashboard();
+
+
+setInterval(
+    refreshDashboard,
+    10 * 60 * 1000
+);
 
 </script>
 
 </body>
+
 </html>
