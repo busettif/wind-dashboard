@@ -145,9 +145,6 @@ fill="#c7f3ef"/>
       y2="55"
       class="arrow"/>
 
-<polygon id="arrowHeadPrainha"
-         points="100,55 95,65 105,65"
-         fill="black"/>
 
 </svg>
 
@@ -187,9 +184,6 @@ fill="#c7f3ef"/>
       y2="65"
       class="arrow"/>
 
-<polygon id="arrowHeadLavradio"
-         points="145,65 135,68 140,75"
-         fill="black"/>
 
 </svg>
 
@@ -232,10 +226,52 @@ if (pRainha) {
     document.getElementById("prainhaAvg").textContent =
         Math.round(pRainha.intensidadeVentoKM / 1.852);
 
-    setDirection(
-        "arrowPrainha",
-        pRainha.idDireccVento
+    function setDirection(lineId, directionId){
+
+    const angles = {
+        1: 0,
+        2: 45,
+        3: 90,
+        4: 135,
+        5: 180,
+        6: 225,
+        7: 270,
+        8: 315,
+        9: 0
+    };
+
+    const angle = angles[directionId];
+
+    if(angle === undefined) return;
+
+    const arrow = document.getElementById(lineId);
+
+    const centerX = 100;
+    const centerY = 100;
+    const length = 45;
+
+    const radians =
+        (angle - 90) * Math.PI / 180;
+
+    const endX =
+        centerX + length * Math.cos(radians);
+
+    const endY =
+        centerY + length * Math.sin(radians);
+
+    arrow.setAttribute("x1", centerX);
+    arrow.setAttribute("y1", centerY);
+
+    arrow.setAttribute("x2", endX);
+    arrow.setAttribute("y2", endY);
+
+    console.log(
+        lineId,
+        directionId,
+        angle
     );
+
+};
 
 }
 
@@ -249,10 +285,52 @@ if (lavradio) {
     document.getElementById("lavradioAvg").textContent =
         Math.round(lavradio.intensidadeVentoKM / 1.852);
 
-    setDirection(
-        "arrowLavradio",
-        lavradio.idDireccVento
+    function setDirection(lineId, directionId){
+
+    const angles = {
+        1: 0,
+        2: 45,
+        3: 90,
+        4: 135,
+        5: 180,
+        6: 225,
+        7: 270,
+        8: 315,
+        9: 0
+    };
+
+    const angle = angles[directionId];
+
+    if(angle === undefined) return;
+
+    const arrow = document.getElementById(lineId);
+
+    const centerX = 100;
+    const centerY = 100;
+    const length = 45;
+
+    const radians =
+        (angle - 90) * Math.PI / 180;
+
+    const endX =
+        centerX + length * Math.cos(radians);
+
+    const endY =
+        centerY + length * Math.sin(radians);
+
+    arrow.setAttribute("x1", centerX);
+    arrow.setAttribute("y1", centerY);
+
+    arrow.setAttribute("x2", endX);
+    arrow.setAttribute("y2", endY);
+
+    console.log(
+        lineId,
+        directionId,
+        angle
     );
+
+};
 
 }
 
