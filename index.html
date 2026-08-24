@@ -385,6 +385,40 @@ async function testHidromod(){
 
 testHidromod();
 
+function getValue(seriesId, data){
+
+    const item =
+        data.Values.find(
+            v => v.TimeSerieId === seriesId
+        );
+
+    return item ? item.Value : null;
+}
+
+const avg =
+    getValue(447, data);
+
+const gust =
+    getValue(446, data);
+
+document.getElementById(
+    "balizaAvg"
+).textContent =
+    Math.round(avg);
+
+document.getElementById(
+    "balizaGust"
+).textContent =
+    Math.round(gust);
+
+    const direction =
+    getValue(449, data);
+
+    setDirectionDegrees(
+    "arrowBaliza",
+    direction
+);
+
 </script>
 
 </body>
