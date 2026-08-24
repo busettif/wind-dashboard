@@ -392,14 +392,18 @@ h1 {
 
 
 /* =========================================================
-   CONFIGURATION
+   BLOC 1 : CONFIGURATION
+   ---------------------------------------------------------
+   Constantes globales : URL des API, identifiants des
+   stations IPMA, identifiants des séries temporelles
+   Hidromod (Baliza 2).
 ========================================================= */
 
 const IPMA_URL =
     "https://api.ipma.pt/open-data/observation/meteorology/stations/observations.json";
 
 const IPMA_STATIONS = {
-    prainha: "1210773",
+    prainha: "1210773",   // Almada, P.Rainha (ID confirmé via stations.json)
     lavradio: "1210766"
 };
 
@@ -411,7 +415,11 @@ const HIDROMOD_SERIES = {
 
 
 /* =========================================================
-   OUTILS GÉNÉRAUX
+   BLOC 2 : UTILITAIRES GÉNÉRAUX
+   ---------------------------------------------------------
+   Fonctions de formatage (dates, nombres) et d'affichage
+   partagées par les deux sources de données. Aucune logique
+   métier IPMA/Hidromod ici.
 ========================================================= */
 
 function pad2(value) {
@@ -420,6 +428,10 @@ function pad2(value) {
 
 
 function formatDateObject(date) {
+
+    // Formate un objet Date JS -> "JJ.MM.AA HH:MM" en heure locale
+    // du navigateur. Utilisé pour Hidromod (timestamp = epoch ms,
+    // donc la conversion de fuseau horaire est automatique).
 
     if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
         return "--.--.-- --:--";
@@ -440,6 +452,10 @@ function formatDateObject(date) {
 
 
 function formatIPMATimestamp(timestamp) {
+
+    // Formate directement la chaîne "AAAA-MM-JJTHH:MM..." renvoyée
+    // par IPMA, sans passer par un objet Date : le timestamp IPMA
+    // est déjà exprimé en heure locale (pas de conversion à faire).
 
     if (!timestamp || typeof timestamp !== "string") {
         return "--.--.-- --:--";
@@ -469,6 +485,7 @@ function formatIPMATimestamp(timestamp) {
 
 function kmhToKnots(kmh) {
 
+    // -99 est la valeur "pas de mesure" utilisée par IPMA.
     const value = Number(kmh);
 
     if (!Number.isFinite(value) || value === -99) {
@@ -480,6 +497,9 @@ function kmhToKnots(kmh) {
 
 
 function displayRoundedValue(elementId, value) {
+
+    // Affiche un nombre arrondi, ou "--" si la valeur est
+    // absente/invalide (NaN, null, undefined).
 
     const element = document.getElementById(elementId);
 
@@ -505,16 +525,34 @@ function setError(elementId, message = "") {
 
 
 /* =========================================================
-   DIRECTION DES FLÈCHES
+   BLOC 3 : FLÈCHES DE DIRECTION (affichage / masquage)
+   ---------------------------------------------------------
+   Logique de dessin des flèches SVG :
+   - positionnement selon un angle en degrés
+   - affichage / masquage quand la direction n'est pas fiable
+     (pas de mesure, valeur invalide, direction "variable")
+
+   Convention : les angles représentent la provenance
+   météorologique du vent (0° = Nord, 90° = Est, 180° = Sud,
+   270° = Ouest).
 ========================================================= */
 
-/*
-   Les angles représentent la provenance météorologique :
-   0°   = Nord
-   90°  = Est
-   180° = Sud
-   270° = Ouest
-*/
+function setArrowVisibility(lineId, visible) {
+
+    // Masque complètement la flèche (et sa pointe, dessinée via
+    // <marker>) quand on n'a pas de direction fiable à afficher,
+    // plutôt que de laisser un cap par défaut ou une ancienne
+    // valeur périmée à l'écran.
+
+    const arrow = document.getElementById(lineId);
+
+    if (!arrow) {
+        return;
+    }
+
+    arrow.style.display = visible ? "" : "none";
+}
+
 
 function setDirectionDegrees(lineId, degrees) {
 
@@ -545,8 +583,13 @@ function setDirectionDegrees(lineId, degrees) {
 }
 
 
-function setIPMADirection(lineId, directionId) {
+function getIPMADirectionDegrees(directionId) {
 
+    // Table de correspondance des codes IPMA -> degrés.
+    // Codes volontairement absents de la table (= flèche masquée) :
+    //   0   = "Sem dados" (pas de mesure)
+    //   9   = "Variável" (direction non définie, pas un cap fixe)
+    //  -99  = valeur invalide
     const directionDegrees = {
         1: 0,
         2: 45,
@@ -555,26 +598,25 @@ function setIPMADirection(lineId, directionId) {
         5: 180,
         6: 225,
         7: 270,
-        8: 315,
-        9: 0
+        8: 315
     };
 
-    const degrees =
-        directionDegrees[Number(directionId)];
+    const degrees = directionDegrees[Number(directionId)];
 
-    if (degrees === undefined) {
-        return;
-    }
-
-    setDirectionDegrees(lineId, degrees);
+    return degrees === undefined ? null : degrees;
 }
 
 
 /* =========================================================
-   DONNÉES IPMA
+   BLOC 4 : DONNÉES IPMA (P.RAINHA, LAVRADIO)
 ========================================================= */
 
 function findLatestIPMAObservation(data, stationId) {
+
+    // Le JSON IPMA est structuré { timestamp: { stationId: {...} } }.
+    // On cherche, du plus récent au plus ancien, le premier relevé
+    // non-null pour la station demandée (une station peut être en
+    // panne à certains horaires et remonter des données à d'autres).
 
     const timestamps =
         Object.keys(data).sort().reverse();
@@ -607,7 +649,14 @@ function updateIPMAStation(
     errorElementId
 ) {
 
+    // Masquée par défaut : si aucune direction valide n'est trouvée
+    // plus bas, la flèche reste masquée plutôt que d'afficher un cap
+    // par défaut ou la dernière valeur connue.
+    setArrowVisibility(arrowElementId, false);
+
     if (!stationResult) {
+
+        displayRoundedValue(valueElementId, NaN);
 
         setError(
             errorElementId,
@@ -620,6 +669,7 @@ function updateIPMAStation(
     const { timestamp, observation } =
         stationResult;
 
+    // --- Vitesse moyenne ---
     const windKnots =
         kmhToKnots(
             observation.intensidadeVentoKM
@@ -630,15 +680,20 @@ function updateIPMAStation(
         windKnots
     );
 
-    if (
-        observation.idDireccVento !== 0 &&
-        observation.idDireccVento !== -99
-    ) {
-
-        setIPMADirection(
-            arrowElementId,
+    // --- Direction : affichée seulement si le code IPMA est exploitable ---
+    const degrees =
+        getIPMADirectionDegrees(
             observation.idDireccVento
         );
+
+    if (degrees !== null) {
+
+        setDirectionDegrees(
+            arrowElementId,
+            degrees
+        );
+
+        setArrowVisibility(arrowElementId, true);
 
     }
 
@@ -720,15 +775,17 @@ async function loadIPMA() {
             error
         );
 
-        setError(
-            "prainhaError",
-            "Erreur de chargement IPMA"
-        );
+        // Requête totalement échouée : on efface aussi les valeurs et
+        // les flèches pour ne pas laisser un relevé périmé à l'écran.
+        displayRoundedValue("prainhaAvg", NaN);
+        displayRoundedValue("lavradioAvg", NaN);
+        setArrowVisibility("arrowPrainha", false);
+        setArrowVisibility("arrowLavradio", false);
 
-        setError(
-            "lavradioError",
-            "Erreur de chargement IPMA"
-        );
+        // Pas de message d'erreur textuel : l'absence de flèche et
+        // les valeurs "--" suffisent à signaler l'échec du chargement.
+        setError("prainhaError");
+        setError("lavradioError");
 
     }
 
@@ -736,7 +793,7 @@ async function loadIPMA() {
 
 
 /* =========================================================
-   DONNÉES HIDROMOD
+   BLOC 5 : DONNÉES HIDROMOD (BALIZA 2)
 ========================================================= */
 
 function getHidromodValue(seriesId, data) {
@@ -766,6 +823,11 @@ function getHidromodValue(seriesId, data) {
 
 function parseHidromodDate(dateValue) {
 
+    // Hidromod renvoie une date au format ASP.NET "/Date(epochMs)/".
+    // Vérifié le 24.08.2026 : pas d'offset dans la réponse réelle.
+    // Si l'API ajoute un jour un offset ("/Date(epochMs+0100)/"),
+    // cette regex ne matchera plus et renverra null -> à surveiller.
+
     if (!dateValue) {
         return null;
     }
@@ -785,6 +847,36 @@ function parseHidromodDate(dateValue) {
     }
 
     return new Date(milliseconds);
+}
+
+
+function updateHidromodDisplay(average, gust, direction, calculationDate) {
+
+    // Regroupe la mise à jour de l'affichage Baliza 2, sur le même
+    // principe que updateIPMAStation : la flèche est masquée par
+    // défaut et n'est affichée que si une direction exploitable
+    // est disponible.
+
+    setArrowVisibility("arrowBaliza", false);
+
+    displayRoundedValue("balizaAvg", average);
+    displayRoundedValue("balizaGust", gust);
+
+    // NB : seule l'absence de série (null) masque la flèche pour
+    // l'instant. Une valeur 0 est traitée comme un cap Nord valide.
+    // À revoir si un test par vent confirmé montre que l'API renvoie
+    // aussi 0 en cas d'absence de mesure (cf. revue de code : avg,
+    // gust et direction à 0 simultanément lors du 1er test).
+    if (direction !== null) {
+
+        setDirectionDegrees("arrowBaliza", direction);
+        setArrowVisibility("arrowBaliza", true);
+
+    }
+
+    document.getElementById("balizaUpdate").textContent =
+        formatDateObject(calculationDate);
+
 }
 
 
@@ -844,34 +936,17 @@ async function loadHidromod() {
                 data
             );
 
-        displayRoundedValue(
-            "balizaAvg",
-            average
-        );
-
-        displayRoundedValue(
-            "balizaGust",
-            gust
-        );
-
-        if (direction !== null) {
-
-            setDirectionDegrees(
-                "arrowBaliza",
-                direction
-            );
-
-        }
-
         const calculationDate =
             parseHidromodDate(
                 data.CalculationTime
             );
 
-        document.getElementById(
-            "balizaUpdate"
-        ).textContent =
-            formatDateObject(calculationDate);
+        updateHidromodDisplay(
+            average,
+            gust,
+            direction,
+            calculationDate
+        );
 
         console.log(
             "Hidromod Baliza 2 :",
@@ -891,10 +966,14 @@ async function loadHidromod() {
             error
         );
 
-        setError(
-            "balizaError",
-            "Erreur de chargement Hidromod"
-        );
+        // Requête totalement échouée : mêmes précautions que pour IPMA.
+        displayRoundedValue("balizaAvg", NaN);
+        displayRoundedValue("balizaGust", NaN);
+        setArrowVisibility("arrowBaliza", false);
+
+        // Pas de message d'erreur textuel : l'absence de flèche et
+        // les valeurs "--" suffisent à signaler l'échec du chargement.
+        setError("balizaError");
 
     }
 
@@ -902,7 +981,12 @@ async function loadHidromod() {
 
 
 /* =========================================================
-   CHARGEMENT ET ACTUALISATION
+   BLOC 6 : CHARGEMENT ET ACTUALISATION
+   ---------------------------------------------------------
+   Point d'entrée de la page : lance les deux sources en
+   parallèle au chargement, puis toutes les 10 minutes.
+   Promise.allSettled garantit qu'un échec sur une source
+   n'empêche pas l'autre de se mettre à jour.
 ========================================================= */
 
 async function refreshDashboard() {
