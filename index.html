@@ -62,9 +62,15 @@ h1 {
 
 .compass {
     display: block;
-    width: 165px;
-    height: 165px;
+    width: 200px;
+    height: 200px;
     margin: auto;
+}
+
+.compass-labels text {
+    font-size: 13px;
+    font-weight: bold;
+    fill: #444;
 }
 
 .avg {
@@ -155,7 +161,7 @@ h1 {
 
         </div>
 
-        <svg class="compass" viewBox="0 0 200 200">
+        <svg class="compass" viewBox="-20 -20 240 240">
 
             <defs>
 
@@ -174,33 +180,62 @@ h1 {
 
                 </marker>
 
+                <clipPath id="compassClipBaliza">
+                    <circle cx="100" cy="100" r="90"/>
+                </clipPath>
+
             </defs>
 
+            <!-- Fond sable du cadran -->
             <circle
                 cx="100"
                 cy="100"
                 r="90"
-                fill="#efe5d4"
+                fill="#efe5d4"/>
+
+            <!-- Zone mer + trait de côte : découpés pour ne jamais déborder du cercle -->
+            <g clip-path="url(#compassClipBaliza)">
+
+                <path
+                    d="M0 200 L140 200 L60 0 L0 0 Z"
+                    fill="#c7f3ef"/>
+
+                <line
+                    x1="60"
+                    y1="0"
+                    x2="140"
+                    y2="200"
+                    class="coast"/>
+
+            </g>
+
+            <!-- Contour du cercle redessiné par-dessus : toujours entièrement visible -->
+            <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="none"
                 stroke="#2f5fd0"
                 stroke-width="2"/>
 
-            <path
-                d="M0 200 L140 200 L60 0 L0 0 Z"
-                fill="#c7f3ef"/>
-
-            <line
-                x1="60"
-                y1="0"
-                x2="140"
-                y2="200"
-                class="coast"/>
+            <!-- Lettres d'orientation, à l'extérieur du cercle -->
+            <g class="compass-labels">
+                <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
+                <text x="170.71" y="29.29" text-anchor="middle" dominant-baseline="central">NE</text>
+                <text x="200" y="100" text-anchor="middle" dominant-baseline="central">E</text>
+                <text x="170.71" y="170.71" text-anchor="middle" dominant-baseline="central">SE</text>
+                <text x="100" y="200" text-anchor="middle" dominant-baseline="central">S</text>
+                <text x="29.29" y="170.71" text-anchor="middle" dominant-baseline="central">SW</text>
+                <text x="0" y="100" text-anchor="middle" dominant-baseline="central">W</text>
+                <text x="29.29" y="29.29" text-anchor="middle" dominant-baseline="central">NW</text>
+            </g>
 
             <line
                 id="arrowBaliza"
                 x1="100"
                 y1="100"
                 x2="100"
-                y2="55"
+                y2="40"
                 class="arrow"
                 marker-end="url(#arrowHeadBaliza)"/>
 
@@ -247,7 +282,7 @@ h1 {
 
         </div>
 
-        <svg class="compass" viewBox="0 0 200 200">
+        <svg class="compass" viewBox="-20 -20 240 240">
 
             <defs>
 
@@ -266,33 +301,62 @@ h1 {
 
                 </marker>
 
+                <clipPath id="compassClipPrainha">
+                    <circle cx="100" cy="100" r="90"/>
+                </clipPath>
+
             </defs>
 
+            <!-- Fond sable du cadran -->
             <circle
                 cx="100"
                 cy="100"
                 r="90"
-                fill="#efe5d4"
+                fill="#efe5d4"/>
+
+            <!-- Zone mer + trait de côte : découpés pour ne jamais déborder du cercle -->
+            <g clip-path="url(#compassClipPrainha)">
+
+                <path
+                    d="M200 0 L200 200 L90 200 L140 0 Z"
+                    fill="#c7f3ef"/>
+
+                <line
+                    x1="140"
+                    y1="0"
+                    x2="90"
+                    y2="200"
+                    class="coast"/>
+
+            </g>
+
+            <!-- Contour du cercle redessiné par-dessus : toujours entièrement visible -->
+            <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="none"
                 stroke="#2f5fd0"
                 stroke-width="2"/>
 
-            <path
-                d="M200 0 L200 200 L90 200 L140 0 Z"
-                fill="#c7f3ef"/>
-
-            <line
-                x1="140"
-                y1="0"
-                x2="90"
-                y2="200"
-                class="coast"/>
+            <!-- Lettres d'orientation, à l'extérieur du cercle -->
+            <g class="compass-labels">
+                <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
+                <text x="170.71" y="29.29" text-anchor="middle" dominant-baseline="central">NE</text>
+                <text x="200" y="100" text-anchor="middle" dominant-baseline="central">E</text>
+                <text x="170.71" y="170.71" text-anchor="middle" dominant-baseline="central">SE</text>
+                <text x="100" y="200" text-anchor="middle" dominant-baseline="central">S</text>
+                <text x="29.29" y="170.71" text-anchor="middle" dominant-baseline="central">SW</text>
+                <text x="0" y="100" text-anchor="middle" dominant-baseline="central">W</text>
+                <text x="29.29" y="29.29" text-anchor="middle" dominant-baseline="central">NW</text>
+            </g>
 
             <line
                 id="arrowPrainha"
                 x1="100"
                 y1="100"
                 x2="100"
-                y2="55"
+                y2="40"
                 class="arrow"
                 marker-end="url(#arrowHeadPrainha)"/>
 
@@ -330,7 +394,7 @@ h1 {
 
         </div>
 
-        <svg class="compass" viewBox="0 0 200 200">
+        <svg class="compass" viewBox="-20 -20 240 240">
 
             <defs>
 
@@ -349,33 +413,62 @@ h1 {
 
                 </marker>
 
+                <clipPath id="compassClipLavradio">
+                    <circle cx="100" cy="100" r="90"/>
+                </clipPath>
+
             </defs>
 
+            <!-- Fond sable du cadran -->
             <circle
                 cx="100"
                 cy="100"
                 r="90"
-                fill="#efe5d4"
+                fill="#efe5d4"/>
+
+            <!-- Zone mer + trait de côte : découpés pour ne jamais déborder du cercle -->
+            <g clip-path="url(#compassClipLavradio)">
+
+                <path
+                    d="M200 0 L200 200 L130 200 L60 0 Z"
+                    fill="#c7f3ef"/>
+
+                <line
+                    x1="60"
+                    y1="0"
+                    x2="130"
+                    y2="200"
+                    class="coast"/>
+
+            </g>
+
+            <!-- Contour du cercle redessiné par-dessus : toujours entièrement visible -->
+            <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="none"
                 stroke="#2f5fd0"
                 stroke-width="2"/>
 
-            <path
-                d="M200 0 L200 200 L130 200 L60 0 Z"
-                fill="#c7f3ef"/>
-
-            <line
-                x1="60"
-                y1="0"
-                x2="130"
-                y2="200"
-                class="coast"/>
+            <!-- Lettres d'orientation, à l'extérieur du cercle -->
+            <g class="compass-labels">
+                <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
+                <text x="170.71" y="29.29" text-anchor="middle" dominant-baseline="central">NE</text>
+                <text x="200" y="100" text-anchor="middle" dominant-baseline="central">E</text>
+                <text x="170.71" y="170.71" text-anchor="middle" dominant-baseline="central">SE</text>
+                <text x="100" y="200" text-anchor="middle" dominant-baseline="central">S</text>
+                <text x="29.29" y="170.71" text-anchor="middle" dominant-baseline="central">SW</text>
+                <text x="0" y="100" text-anchor="middle" dominant-baseline="central">W</text>
+                <text x="29.29" y="29.29" text-anchor="middle" dominant-baseline="central">NW</text>
+            </g>
 
             <line
                 id="arrowLavradio"
                 x1="100"
                 y1="100"
                 x2="100"
-                y2="55"
+                y2="40"
                 class="arrow"
                 marker-end="url(#arrowHeadLavradio)"/>
 
@@ -578,7 +671,7 @@ function setDirectionDegrees(lineId, degrees) {
 
     const centerX = 100;
     const centerY = 100;
-    const length = 45;
+    const length = 60; // longueur de la flèche (1/3 plus longue que l'original : 45 -> 60)
 
     const radians =
         (direction - 90) * Math.PI / 180;
