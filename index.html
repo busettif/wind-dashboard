@@ -88,10 +88,12 @@ fill="#c7f3ef"/>
       x2="140" y2="200"
       class="coast"/>
 
-<text x="100" y="80"
+<text id="balizaAvg"
+      x="100"
+      y="80"
       text-anchor="middle"
       class="avg">
-17
+--
 </text>
 
 <line x1="100" y1="100"
@@ -101,10 +103,12 @@ fill="#c7f3ef"/>
 <polygon points="60,65 67,62 63,72"
 fill="black"/>
 
-<text x="100" y="130"
+<text id="prainhaAvg"
+      x="100"
+      y="80"
       text-anchor="middle"
-      class="gust">
-22
+      class="avg">
+--
 </text>
 
 </svg>
@@ -143,10 +147,12 @@ fill="#c7f3ef"/>
 <polygon points="100,55 95,65 105,65"
 fill="black"/>
 
-<text x="100" y="130"
+<text id="lavradioAvg"
+      x="100"
+      y="80"
       text-anchor="middle"
-      class="gust">
-18
+      class="avg">
+--
 </text>
 
 </svg>
@@ -195,6 +201,37 @@ fill="black"/>
 </svg>
 
 </div>
+
+<script>
+
+async function loadIPMA() {
+
+    const response = await fetch(
+        "https://api.ipma.pt/open-data/observation/meteorology/stations/observations.json"
+    );
+
+    const data = await response.json();
+
+    const dates = Object.keys(data);
+
+    const lastDate = dates.sort().pop();
+
+    const obs = data[lastDate];
+
+    const pRainha = obs["1210773"];
+    const lavradio = obs["1210766"];
+
+    document.getElementById("prainhaAvg").textContent =
+        Math.round(pRainha.intensidadeVentoKM / 1.852);
+
+    document.getElementById("lavradioAvg").textContent =
+        Math.round(lavradio.intensidadeVentoKM / 1.852);
+
+}
+
+loadIPMA();
+
+</script>
 
 </body>
 </html>
