@@ -1,163 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<title>Wind Dashboard</title>
-
-<style>
-
-body{
-    margin:0;
-    padding:20px;
-    font-family:Arial, sans-serif;
-    background:#eef2f5;
-}
-
-h1{
-    text-align:center;
-}
-
-.spot{
-    background:white;
-    border-radius:20px;
-    padding:20px;
-    margin-bottom:20px;
-    box-shadow:0 3px 10px rgba(0,0,0,0.15);
-}
-
-.spot-name{
-    text-align:center;
-    font-size:26px;
-    font-weight:bold;
-}
-
-.wind{
-    text-align:center;
-    font-size:44px;
-    margin-top:10px;
-    color:#0056b3;
-}
-
-.gust{
-    text-align:center;
-    font-size:20px;
-    color:#666;
-}
-
-.compass{
-    width:180px;
-    height:180px;
-    margin:auto;
-    display:block;
-}
-
-</style>
-
-</head>
-<body>
-
-<h1>🌬 Wind Dashboard</h1>
-
 <div class="spot">
 
-<div class="spot-name">
-Baliza 2
-</div>
+    <div class="spot-name">BALIZA 2</div>
 
-<svg class="compass" viewBox="0 0 200 200">
+    <svg class="compass" viewBox="0 0 200 200">
 
-<circle cx="100" cy="100" r="90"
-stroke="blue"
-stroke-width="2"
-fill="#efe5d4"/>
+        <!-- Terre / Mer -->
+        <path d="M0 200 L140 200 L60 0 L0 0 Z"
+              fill="#c7f3ef"/>
 
-<path d="M0 200 L140 200 L60 0 L0 0 Z"
-fill="#c7f3ef"/>
+        <!-- Cercle -->
+        <circle cx="100" cy="100"
+                r="90"
+                fill="#efe5d4"
+                stroke="#0044cc"
+                stroke-width="2"/>
 
-<line x1="100" y1="100"
-x2="40" y2="50"
-stroke="#c000ff"
-stroke-width="4"/>
+        <!-- Ligne de côte -->
+        <line x1="60" y1="0"
+              x2="140" y2="200"
+              stroke="#ff00ff"
+              stroke-width="3"/>
 
-</svg>
+        <!-- Flèche du vent -->
+        <line x1="100" y1="100"
+              x2="55" y2="60"
+              stroke="#222"
+              stroke-width="4"/>
 
-<div class="wind">
-17 kn
-</div>
+        <polygon points="55,60 62,58 58,66"
+                 fill="#222"/>
 
-<div class="gust">
-18 kn gust
-</div>
+        <!-- Vent moyen -->
+        <text x="100"
+              y="82"
+              text-anchor="middle"
+              font-size="24"
+              font-weight="bold"
+              fill="#0055cc">
+            17
+        </text>
 
-</div>
+        <!-- Rafale -->
+        <text x="100"
+              y="125"
+              text-anchor="middle"
+              font-size="16"
+              fill="#666">
+            22
+        </text>
 
-<div class="spot">
-
-<div class="spot-name">
-P.Rainha
-</div>
-
-<svg class="compass" viewBox="0 0 200 200">
-
-<circle cx="100" cy="100" r="90"
-stroke="blue"
-stroke-width="2"
-fill="#efe5d4"/>
-
-<path d="M200 0 L200 200 L80 200 L140 0 Z"
-fill="#c7f3ef"/>
-
-<line x1="100" y1="100"
-x2="100" y2="40"
-stroke="#c000ff"
-stroke-width="4"/>
-
-</svg>
-
-<div class="wind">
-14 kn
-</div>
-
-<div class="gust">
-16 kn gust
-</div>
+    </svg>
 
 </div>
-
-<div class="spot">
-
-<div class="spot-name">
-Lavradio
-</div>
-
-<svg class="compass" viewBox="0 0 200 200">
-
-<circle cx="100" cy="100" r="90"
-stroke="blue"
-stroke-width="2"
-fill="#efe5d4"/>
-
-<path d="M200 0 L200 200 L130 200 L60 0 Z"
-fill="#c7f3ef"/>
-
-<line x1="100" y1="100"
-x2="160" y2="50"
-stroke="#c000ff"
-stroke-width="4"/>
-
-</svg>
-
-<div class="wind">
-21 kn
-</div>
-
-<div class="gust">
-24 kn gust
-</div>
-
-</div>
-
-</body>
-</html>
