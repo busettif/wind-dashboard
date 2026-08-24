@@ -118,9 +118,9 @@ h1 {
 @media (min-width: 800px) {
 
     .dashboard {
-        max-width: 1020px;
+        max-width: 1360px;
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 12px;
     }
 
@@ -466,6 +466,121 @@ h1 {
 
     </section>
 
+
+    <!-- CÂMARA MUNICIPAL DE SETÚBAL (AML, station 37) -->
+
+    <section class="spot">
+
+        <div class="spot-header">
+
+            <div class="spot-name">
+                Câmara Municipal de Setúbal
+            </div>
+
+            <div id="setubalUpdate" class="update-time">
+                --.--.-- --:--
+            </div>
+
+        </div>
+
+        <svg class="compass" viewBox="-20 -20 240 240">
+
+            <defs>
+
+                <marker
+                    id="arrowHeadSetubal"
+                    markerWidth="8"
+                    markerHeight="8"
+                    refX="6"
+                    refY="3"
+                    orient="auto"
+                    markerUnits="strokeWidth">
+
+                    <path
+                        d="M0,0 L0,6 L7,3 z"
+                        class="wind-arrow-head"/>
+
+                </marker>
+
+                <clipPath id="compassClipSetubal">
+                    <circle cx="100" cy="100" r="90"/>
+                </clipPath>
+
+            </defs>
+
+            <!-- Fond sable du cadran -->
+            <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="#efe5d4"/>
+
+            <!-- Zone eau : découpée pour ne jamais déborder du cercle -->
+            <g clip-path="url(#compassClipSetubal)">
+
+                <!-- Ligne à 270°, sable en haut (Nord) -->
+                <path
+                    d="M -200.0 100.0 L 400.0 100.0 L 400.0 500.0 L -200.0 500.0 Z"
+                    fill="#4da6d9"/>
+
+            </g>
+
+            <!-- Contour du cercle redessiné par-dessus : toujours entièrement visible -->
+            <circle
+                cx="100"
+                cy="100"
+                r="90"
+                fill="none"
+                stroke="#2f5fd0"
+                stroke-width="2"/>
+
+            <!-- Lettres d'orientation, à l'extérieur du cercle -->
+            <g class="compass-labels">
+                <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
+                <text x="170.71" y="29.29" text-anchor="middle" dominant-baseline="central">NE</text>
+                <text x="200" y="100" text-anchor="middle" dominant-baseline="central">E</text>
+                <text x="170.71" y="170.71" text-anchor="middle" dominant-baseline="central">SE</text>
+                <text x="100" y="200" text-anchor="middle" dominant-baseline="central">S</text>
+                <text x="29.29" y="170.71" text-anchor="middle" dominant-baseline="central">SW</text>
+                <text x="0" y="100" text-anchor="middle" dominant-baseline="central">W</text>
+                <text x="29.29" y="29.29" text-anchor="middle" dominant-baseline="central">NW</text>
+            </g>
+
+            <line
+                id="arrowSetubal"
+                x1="100"
+                y1="100"
+                x2="100"
+                y2="40"
+                class="arrow"
+                marker-end="url(#arrowHeadSetubal)"/>
+
+            <text
+                id="setubalAvg"
+                x="100"
+                y="83"
+                text-anchor="middle"
+                class="avg">
+                --
+            </text>
+
+            <text
+                id="setubalGust"
+                x="100"
+                y="128"
+                text-anchor="middle"
+                class="gust">
+                --
+            </text>
+
+        </svg>
+
+        <div id="setubalError" class="error-message"></div>
+
+        <div class="source">Source: clima.aml.pt</div>
+
+    </section>
+
 </main>
 
 
@@ -495,6 +610,11 @@ const HIDROMOD_SERIES = {
     average: 447,
     direction: 449
 };
+
+// Worker Cloudflare qui fait office de proxy pour clima.aml.pt (station 37 :
+// Câmara Municipal de Setúbal). Voir aml-proxy-standalone.js pour le code du proxy.
+const AML_URL =
+    "https://aml-proxy.busetti-f.workers.dev/api/aml-station?station=37";
 
 
 /* =========================================================
@@ -1064,6 +1184,145 @@ async function loadHidromod() {
 
 
 /* =========================================================
+   BLOC 5-BIS : DONNÉES AML (CÂMARA MUNICIPAL DE SETÚBAL)
+   ---------------------------------------------------------
+   Passe par un Worker Cloudflare (aml-proxy-standalone.js) qui gère
+   côté serveur la session + le jeton CSRF exigés par clima.aml.pt,
+   et renvoie tel quel le JSON DataTables de la station.
+
+   Colonnes utiles de aaData[i] (déterminées empiriquement le 24.08.2026) :
+     0  = horodatage "AAAA-MM-JJ HH:MM:SS" (heure locale Portugal)
+     8  = vitesse moyenne du vent (km/h)
+     9  = rafale (km/h)
+     11 = direction du vent (degrés)
+========================================================= */
+
+const AML_COLUMNS = {
+    timestamp: 0,
+    average: 8,
+    gust: 9,
+    direction: 11
+};
+
+
+function formatAMLTimestamp(raw) {
+
+    // Le timestamp AML est déjà en heure locale Portugal (confirmé),
+    // donc même logique que formatIPMATimestamp : pas de conversion Date.
+
+    if (!raw || typeof raw !== "string") {
+        return "--.--.-- --:--";
+    }
+
+    const match = raw.match(
+        /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/
+    );
+
+    if (!match) {
+        return "--.--.-- --:--";
+    }
+
+    return (
+        match[3] +
+        "." +
+        match[2] +
+        "." +
+        match[1].slice(-2) +
+        " " +
+        match[4] +
+        ":" +
+        match[5]
+    );
+}
+
+
+function updateAMLDisplay(row) {
+
+    setArrowVisibility("arrowSetubal", false);
+
+    if (!row) {
+
+        displayRoundedValue("setubalAvg", NaN);
+        displayRoundedValue("setubalGust", NaN);
+
+        setError(
+            "setubalError",
+            "Aucune observation disponible"
+        );
+
+        return;
+    }
+
+    // Unité confirmée : km/h -> conversion en noeuds, comme pour IPMA,
+    // pour rester cohérent avec le reste du dashboard.
+    const average = kmhToKnots(row[AML_COLUMNS.average]);
+    const gust = kmhToKnots(row[AML_COLUMNS.gust]);
+    const directionDeg = Number(row[AML_COLUMNS.direction]);
+
+    displayRoundedValue("setubalAvg", average);
+    displayRoundedValue("setubalGust", gust);
+
+    if (Number.isFinite(directionDeg)) {
+
+        setDirectionDegrees("arrowSetubal", directionDeg);
+        setArrowVisibility("arrowSetubal", true);
+
+    }
+
+    document.getElementById("setubalUpdate").textContent =
+        formatAMLTimestamp(row[AML_COLUMNS.timestamp]);
+
+    setError("setubalError");
+
+}
+
+
+async function loadAML() {
+
+    setError("setubalError");
+
+    try {
+
+        const response = await fetch(AML_URL, {
+            cache: "no-store"
+        });
+
+        if (!response.ok) {
+            throw new Error("HTTP AML " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (data && data.error) {
+            throw new Error(data.error);
+        }
+
+        const rows = Array.isArray(data?.aaData) ? data.aaData : [];
+
+        // Les lignes sont déjà triées de la plus récente à la plus ancienne.
+        const latestRow = rows.length > 0 ? rows[0] : null;
+
+        updateAMLDisplay(latestRow);
+
+        console.log("AML Setúbal :", latestRow);
+
+    }
+    catch (error) {
+
+        console.error("Erreur AML :", error);
+
+        displayRoundedValue("setubalAvg", NaN);
+        displayRoundedValue("setubalGust", NaN);
+        setArrowVisibility("arrowSetubal", false);
+
+        setError("setubalError");
+
+    }
+
+}
+
+
+/* =========================================================
    BLOC 6 : CHARGEMENT ET ACTUALISATION
    ---------------------------------------------------------
    Point d'entrée de la page : lance les deux sources en
@@ -1076,7 +1335,8 @@ async function refreshDashboard() {
 
     await Promise.allSettled([
         loadIPMA(),
-        loadHidromod()
+        loadHidromod(),
+        loadAML()
     ]);
 
 }
