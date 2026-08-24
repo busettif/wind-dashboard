@@ -1,15 +1,163 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Wind Dashboard</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Wind Dashboard</title>
+
+<style>
+
+body{
+    margin:0;
+    padding:20px;
+    font-family:Arial, sans-serif;
+    background:#eef2f5;
+}
+
+h1{
+    text-align:center;
+}
+
+.spot{
+    background:white;
+    border-radius:20px;
+    padding:20px;
+    margin-bottom:20px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.15);
+}
+
+.spot-name{
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+}
+
+.wind{
+    text-align:center;
+    font-size:44px;
+    margin-top:10px;
+    color:#0056b3;
+}
+
+.gust{
+    text-align:center;
+    font-size:20px;
+    color:#666;
+}
+
+.compass{
+    width:180px;
+    height:180px;
+    margin:auto;
+    display:block;
+}
+
+</style>
+
 </head>
 <body>
 
-<h1>Wind Dashboard</h1>
+<h1>🌬 Wind Dashboard</h1>
 
-<p>Baliza 2</p>
-<p>P.Rainha</p>
-<p>Lavradio</p>
+<div class="spot">
+
+<div class="spot-name">
+Baliza 2
+</div>
+
+<svg class="compass" viewBox="0 0 200 200">
+
+<circle cx="100" cy="100" r="90"
+stroke="blue"
+stroke-width="2"
+fill="#efe5d4"/>
+
+<path d="M0 200 L140 200 L60 0 L0 0 Z"
+fill="#c7f3ef"/>
+
+<line x1="100" y1="100"
+x2="40" y2="50"
+stroke="#c000ff"
+stroke-width="4"/>
+
+</svg>
+
+<div class="wind">
+17 kn
+</div>
+
+<div class="gust">
+18 kn gust
+</div>
+
+</div>
+
+<div class="spot">
+
+<div class="spot-name">
+P.Rainha
+</div>
+
+<svg class="compass" viewBox="0 0 200 200">
+
+<circle cx="100" cy="100" r="90"
+stroke="blue"
+stroke-width="2"
+fill="#efe5d4"/>
+
+<path d="M200 0 L200 200 L80 200 L140 0 Z"
+fill="#c7f3ef"/>
+
+<line x1="100" y1="100"
+x2="100" y2="40"
+stroke="#c000ff"
+stroke-width="4"/>
+
+</svg>
+
+<div class="wind">
+14 kn
+</div>
+
+<div class="gust">
+16 kn gust
+</div>
+
+</div>
+
+<div class="spot">
+
+<div class="spot-name">
+Lavradio
+</div>
+
+<svg class="compass" viewBox="0 0 200 200">
+
+<circle cx="100" cy="100" r="90"
+stroke="blue"
+stroke-width="2"
+fill="#efe5d4"/>
+
+<path d="M200 0 L200 200 L130 200 L60 0 Z"
+fill="#c7f3ef"/>
+
+<line x1="100" y1="100"
+x2="160" y2="50"
+stroke="#c000ff"
+stroke-width="4"/>
+
+</svg>
+
+<div class="wind">
+21 kn
+</div>
+
+<div class="gust">
+24 kn gust
+</div>
+
+</div>
 
 </body>
 </html>
