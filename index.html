@@ -1,54 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Wind Dashboard</title>
+
+<style>
+
+body{
+    margin:10px;
+    font-family:Arial,sans-serif;
+    background:#eef2f5;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.spot{
+    background:white;
+    border-radius:15px;
+    padding:10px;
+    margin-bottom:10px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+
+.spot-name{
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+}
+
+svg{
+    display:block;
+    margin:auto;
+    width:180px;
+    height:180px;
+}
+
+.avg{
+    font-size:28px;
+    font-weight:bold;
+    fill:#0066cc;
+}
+
+.gust{
+    font-size:18px;
+    fill:#666;
+}
+
+.arrow{
+    stroke:black;
+    stroke-width:4;
+}
+
+.coast{
+    stroke:#ff00ff;
+    stroke-width:3;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🌬 Wind Dashboard</h1>
+
+
 <div class="spot">
 
-    <div class="spot-name">BALIZA 2</div>
+<div class="spot-name">BALIZA 2</div>
 
-    <svg class="compass" viewBox="0 0 200 200">
+<svg viewBox="0 0 200 200">
 
-        <!-- Terre / Mer -->
-        <path d="M0 200 L140 200 L60 0 L0 0 Z"
-              fill="#c7f3ef"/>
+<circle cx="100" cy="100" r="90"
+fill="#efe5d4"
+stroke="#2f5fd0"
+stroke-width="2"/>
 
-        <!-- Cercle -->
-        <circle cx="100" cy="100"
-                r="90"
-                fill="#efe5d4"
-                stroke="#0044cc"
-                stroke-width="2"/>
+<path d="M0 200 L140 200 L60 0 L0 0 Z"
+fill="#c7f3ef"/>
 
-        <!-- Ligne de côte -->
-        <line x1="60" y1="0"
-              x2="140" y2="200"
-              stroke="#ff00ff"
-              stroke-width="3"/>
+<line x1="60" y1="0"
+      x2="140" y2="200"
+      class="coast"/>
 
-        <!-- Flèche du vent -->
-        <line x1="100" y1="100"
-              x2="55" y2="60"
-              stroke="#222"
-              stroke-width="4"/>
+<text x="100" y="80"
+      text-anchor="middle"
+      class="avg">
+17
+</text>
 
-        <polygon points="55,60 62,58 58,66"
-                 fill="#222"/>
+<line x1="100" y1="100"
+      x2="60" y2="65"
+      class="arrow"/>
 
-        <!-- Vent moyen -->
-        <text x="100"
-              y="82"
-              text-anchor="middle"
-              font-size="24"
-              font-weight="bold"
-              fill="#0055cc">
-            17
-        </text>
+<polygon points="60,65 67,62 63,72"
+fill="black"/>
 
-        <!-- Rafale -->
-        <text x="100"
-              y="125"
-              text-anchor="middle"
-              font-size="16"
-              fill="#666">
-            22
-        </text>
+<text x="100" y="130"
+      text-anchor="middle"
+      class="gust">
+22
+</text>
 
-    </svg>
+</svg>
 
 </div>
+
+
+<div class="spot">
+
+<div class="spot-name">P.RAINHA</div>
+
+<svg viewBox="0 0 200 200">
+
+<circle cx="100" cy="100" r="90"
+fill="#efe5d4"
+stroke="#2f5fd0"
+stroke-width="2"/>
+
+<path d="M200 0 L200 200 L90 200 L140 0 Z"
+fill="#c7f3ef"/>
+
+<line x1="140" y1="0"
+      x2="90" y2="200"
+      class="coast"/>
+
+<text x="100" y="80"
+      text-anchor="middle"
+      class="avg">
+14
+</text>
+
+<line x1="100" y1="100"
+      x2="100" y2="55"
+      class="arrow"/>
+
+<polygon points="100,55 95,65 105,65"
+fill="black"/>
+
+<text x="100" y="130"
+      text-anchor="middle"
+      class="gust">
+18
+</text>
+
+</svg>
+
+</div>
+
+
+
+<div class="spot">
+
+<div class="spot-name">LAVRADIO</div>
+
+<svg viewBox="0 0 200 200">
+
+<circle cx="100" cy="100" r="90"
+fill="#efe5d4"
+stroke="#2f5fd0"
+stroke-width="2"/>
+
+<path d="M200 0 L200 200 L130 200 L60 0 Z"
+fill="#c7f3ef"/>
+
+<line x1="60" y1="0"
+      x2="130" y2="200"
+      class="coast"/>
+
+<text x="100" y="80"
+      text-anchor="middle"
+      class="avg">
+20
+</text>
+
+<line x1="100" y1="100"
+      x2="145" y2="65"
+      class="arrow"/>
+
+<polygon points="145,65 135,68 140,75"
+fill="black"/>
+
+<text x="100" y="130"
+      text-anchor="middle"
+      class="gust">
+24
+</text>
+
+</svg>
+
+</div>
+
+</body>
+</html>
