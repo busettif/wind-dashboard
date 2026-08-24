@@ -138,12 +138,16 @@ fill="#c7f3ef"/>
       text-anchor="middle"
       class="avg">--</text>
 
-<line x1="100" y1="100"
-      x2="100" y2="55"
+<line id="arrowPrainha"
+      x1="100"
+      y1="100"
+      x2="100"
+      y2="55"
       class="arrow"/>
 
-<polygon points="100,55 95,65 105,65"
-fill="black"/>
+<polygon id="arrowHeadPrainha"
+         points="100,55 95,65 105,65"
+         fill="black"/>
 
 </svg>
 
@@ -176,12 +180,16 @@ fill="#c7f3ef"/>
       text-anchor="middle"
       class="avg">--</text>
 
-<line x1="100" y1="100"
-      x2="145" y2="65"
+<line id="arrowLavradio"
+      x1="100"
+      y1="100"
+      x2="145"
+      y2="65"
       class="arrow"/>
 
-<polygon points="145,65 135,68 140,75"
-fill="black"/>
+<polygon id="arrowHeadLavradio"
+         points="145,65 135,68 140,75"
+         fill="black"/>
 
 </svg>
 
@@ -214,19 +222,39 @@ async function loadIPMA() {
         console.log("P.Rainha", pRainha);
         console.log("Lavradio", lavradio);
 
-        if (pRainha) {
+if (pRainha) {
 
-            document.getElementById("prainhaAvg").textContent =
-                Math.round(pRainha.intensidadeVentoKM / 1.852);
+    console.log(
+        "P.Rainha direction:",
+        pRainha.idDireccVento
+    );
 
-        }
+    document.getElementById("prainhaAvg").textContent =
+        Math.round(pRainha.intensidadeVentoKM / 1.852);
 
-        if (lavradio) {
+    setDirection(
+        "arrowPrainha",
+        pRainha.idDireccVento
+    );
 
-            document.getElementById("lavradioAvg").textContent =
-                Math.round(lavradio.intensidadeVentoKM / 1.852);
+}
 
-        }
+if (lavradio) {
+
+    console.log(
+        "Lavradio direction:",
+        lavradio.idDireccVento
+    );
+
+    document.getElementById("lavradioAvg").textContent =
+        Math.round(lavradio.intensidadeVentoKM / 1.852);
+
+    setDirection(
+        "arrowLavradio",
+        lavradio.idDireccVento
+    );
+
+}
 
     }
     catch(error) {
@@ -235,6 +263,32 @@ async function loadIPMA() {
 
     }
 
+}
+
+function setDirection(lineId, directionId){
+
+    const angles = {
+        1: 0,      // N
+        2: 45,     // NE
+        3: 90,     // E
+        4: 135,    // SE
+        5: 180,    // S
+        6: 225,    // SW
+        7: 270,    // W
+        8: 315,    // NW
+        9: 0
+    };
+
+    const angle = angles[directionId];
+
+    if(angle === undefined) return;
+
+    const arrow = document.getElementById(lineId);
+
+    arrow.setAttribute(
+        "transform",
+        `rotate(${angle} 100 100)`
+    );
 }
 
 loadIPMA();
