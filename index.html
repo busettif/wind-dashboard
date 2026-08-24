@@ -372,9 +372,18 @@ function setDirection(lineId, directionId){
 
 async function testHidromod(){
 
-    const response = await fetch(
-        "https://apss.hidromod.com/AquaSafeServer/rest/GetTimeSerieValueBeforeDateByTimeSerieIds/451,450,448,449,446,447/2026-08-24T11:18:11.383Z/?format=json"
-    );
+    const now = new Date().toISOString();
+
+const response = await fetch(
+    `https://apss.hidromod.com/AquaSafeServer/rest/GetTimeSerieValueBeforeDateByTimeSerieIds/451,450,448,449,446,447/${now}/?format=json`
+);
+console.log("Hidromod request =", now);
+const direction = getValue(449, data);
+
+console.log(
+    "Direction Baliza =",
+    direction
+);
 
     const data = await response.json();
 
