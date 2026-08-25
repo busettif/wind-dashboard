@@ -606,15 +606,38 @@ function updateSpotDisplay(spotKey, options) {
         options || {};
 
     const arrowId = elementId(spotKey, "arrow");
+    const arrowHeadPathId = elementId(spotKey, "arrowHeadPath");
     const avgId = elementId(spotKey, "avg");
     const gustId = elementId(spotKey, "gust");
     const updateId = elementId(spotKey, "update");
     const errorId = elementId(spotKey, "error");
 
+    const ageMs =
+        measuredAt instanceof Date && !Number.isNaN(measuredAt.getTime())
+            ? Date.now() - measuredAt.getTime()
+            : null;
+
+    // Règle simple, sans palier intermédiaire : noir si < 60 min, gris
+    // sinon (peu importe que ce soit 2h ou 3 jours). Le rouge du texte
+    // date/heure (>24h) est une règle indépendante, gérée plus bas.
+    const isFresh = ageMs !== null && ageMs < 60 * 60 * 1000;
+    const arrowColor = isFresh ? "#111" : "#999";
+
     setArrowVisibility(arrowId, false);
 
     displayRoundedValue(avgId, average);
     displayRoundedValue(gustId, gust);
+
+    const arrowLine = document.getElementById(arrowId);
+    const arrowHeadPath = document.getElementById(arrowHeadPathId);
+
+    if (arrowLine) {
+        arrowLine.style.stroke = arrowColor;
+    }
+
+    if (arrowHeadPath) {
+        arrowHeadPath.style.fill = arrowColor;
+    }
 
     if (Number.isFinite(directionDeg)) {
         setDirectionDegrees(arrowId, directionDeg);
@@ -627,11 +650,6 @@ function updateSpotDisplay(spotKey, options) {
         updateElement.textContent = timeText;
 
         // Rouge si la mesure a plus de 24h.
-        const ageMs =
-            measuredAt instanceof Date && !Number.isNaN(measuredAt.getTime())
-                ? Date.now() - measuredAt.getTime()
-                : null;
-
         updateElement.classList.toggle("stale", ageMs !== null && ageMs > 24 * 60 * 60 * 1000);
     }
 
@@ -968,6 +986,7 @@ function buildCardHtml(spot) {
 
     const arrowId = elementId(spot.key, "arrow");
     const markerId = elementId(spot.key, "arrowHead");
+    const arrowHeadPathId = elementId(spot.key, "arrowHeadPath");
     const clipId = elementId(spot.key, "clip");
     const avgId = elementId(spot.key, "avg");
     const gustId = elementId(spot.key, "gust");
@@ -1002,7 +1021,7 @@ function buildCardHtml(spot) {
 
             <defs>
                 <marker id="${markerId}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
-                    <path d="M0,0 L0,6 L7,3 z" class="wind-arrow-head"/>
+                    <path id="${arrowHeadPathId}" d="M0,0 L0,6 L7,3 z" class="wind-arrow-head"/>
                 </marker>
                 ${clipDef}
             </defs>
