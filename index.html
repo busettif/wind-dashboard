@@ -105,7 +105,7 @@ h1 {
     margin: auto;
 }
 
-.dashboard-aml-wrapper {
+.dashboard-wrapper {
     display: contents;
 }
 
@@ -220,7 +220,7 @@ h1 {
 <div id="stationSettingsPanel" class="station-settings-panel" hidden>
 
     <div class="station-settings-header">
-        <strong>AML Stations</strong>
+        <strong>Stations (alphabetical order)</strong>
         <div>
             <button id="selectAllBtn" type="button">Select all</button>
             <button id="selectNoneBtn" type="button">Select none</button>
@@ -234,335 +234,9 @@ h1 {
 
 <main class="dashboard">
 
-    <!-- BALIZA 2 -->
-
-    <section class="spot">
-
-        <div class="spot-header">
-
-            <div class="spot-name">
-                Portinho da Arrábida (baliza)
-            </div>
-
-            <div id="balizaUpdate" class="update-time">
-                --.--.-- --:--
-            </div>
-
-        </div>
-
-        <svg class="compass" viewBox="-20 -20 240 240">
-
-            <defs>
-
-                <marker
-                    id="arrowHeadBaliza"
-                    markerWidth="8"
-                    markerHeight="8"
-                    refX="6"
-                    refY="3"
-                    orient="auto"
-                    markerUnits="strokeWidth">
-
-                    <path
-                        d="M0,0 L0,6 L7,3 z"
-                        class="wind-arrow-head"/>
-
-                </marker>
-
-                <clipPath id="compassClipBaliza">
-                    <circle cx="100" cy="100" r="90"/>
-                </clipPath>
-
-            </defs>
-
-            <!-- Fond sable du cadran -->
-            <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="#efe5d4"/>
-
-            <!-- Zone eau : découpée pour ne jamais déborder du cercle -->
-            <g clip-path="url(#compassClipBaliza)">
-
-                <!-- Côte à 230°, sable côté NW (calculée pour passer exactement par le centre) -->
-                <path
-                    d="M -129.8 292.8 L 329.8 -92.8 L 586.9 213.6 L 127.3 599.3 Z"
-                    fill="#4da6d9"/>
-
-            </g>
-
-            <!-- Contour du cercle redessiné par-dessus : toujours entièrement visible -->
-            <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="none"
-                stroke="#2f5fd0"
-                stroke-width="2"/>
-
-            <!-- Lettres d'orientation, à l'extérieur du cercle -->
-            <g class="compass-labels">
-                <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
-                <text x="170.71" y="29.29" text-anchor="middle" dominant-baseline="central">NE</text>
-                <text x="200" y="100" text-anchor="middle" dominant-baseline="central">E</text>
-                <text x="170.71" y="170.71" text-anchor="middle" dominant-baseline="central">SE</text>
-                <text x="100" y="200" text-anchor="middle" dominant-baseline="central">S</text>
-                <text x="29.29" y="170.71" text-anchor="middle" dominant-baseline="central">SW</text>
-                <text x="0" y="100" text-anchor="middle" dominant-baseline="central">W</text>
-                <text x="29.29" y="29.29" text-anchor="middle" dominant-baseline="central">NW</text>
-            </g>
-
-            <line
-                id="arrowBaliza"
-                x1="100"
-                y1="20"
-                x2="100"
-                y2="100"
-                class="arrow"
-                marker-end="url(#arrowHeadBaliza)"/>
-
-            <text
-                id="balizaAvg"
-                x="100"
-                y="83"
-                text-anchor="middle"
-                class="avg">
-                --
-            </text>
-
-            <text
-                id="balizaGust"
-                x="100"
-                y="128"
-                text-anchor="middle"
-                class="gust">
-                --
-            </text>
-
-        </svg>
-
-        <div id="balizaError" class="error-message"></div>
-
-        <div class="source">Source: apss.hidromod.com</div>
-
-    </section>
-
-
-    <!-- P.RAINHA -->
-
-    <section class="spot">
-
-        <div class="spot-header">
-
-            <div class="spot-name">
-                Praia da Rainha
-            </div>
-
-            <div id="prainhaUpdate" class="update-time">
-                --.--.-- --:--
-            </div>
-
-        </div>
-
-        <svg class="compass" viewBox="-20 -20 240 240">
-
-            <defs>
-
-                <marker
-                    id="arrowHeadPrainha"
-                    markerWidth="8"
-                    markerHeight="8"
-                    refX="6"
-                    refY="3"
-                    orient="auto"
-                    markerUnits="strokeWidth">
-
-                    <path
-                        d="M0,0 L0,6 L7,3 z"
-                        class="wind-arrow-head"/>
-
-                </marker>
-
-                <clipPath id="compassClipPrainha">
-                    <circle cx="100" cy="100" r="90"/>
-                </clipPath>
-
-            </defs>
-
-            <!-- Fond sable du cadran -->
-            <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="#efe5d4"/>
-
-            <!-- Zone eau : découpée pour ne jamais déborder du cercle -->
-            <g clip-path="url(#compassClipPrainha)">
-
-                <!-- Côte à 153°, sable côté E (calculée pour passer exactement par le centre) -->
-                <path
-                    d="M 236.2 367.3 L -36.2 -167.3 L -392.6 14.3 L -120.2 548.9 Z"
-                    fill="#4da6d9"/>
-
-            </g>
-
-            <!-- Contour du cercle redessiné par-dessus : toujours entièrement visible -->
-            <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="none"
-                stroke="#2f5fd0"
-                stroke-width="2"/>
-
-            <!-- Lettres d'orientation, à l'extérieur du cercle -->
-            <g class="compass-labels">
-                <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
-                <text x="170.71" y="29.29" text-anchor="middle" dominant-baseline="central">NE</text>
-                <text x="200" y="100" text-anchor="middle" dominant-baseline="central">E</text>
-                <text x="170.71" y="170.71" text-anchor="middle" dominant-baseline="central">SE</text>
-                <text x="100" y="200" text-anchor="middle" dominant-baseline="central">S</text>
-                <text x="29.29" y="170.71" text-anchor="middle" dominant-baseline="central">SW</text>
-                <text x="0" y="100" text-anchor="middle" dominant-baseline="central">W</text>
-                <text x="29.29" y="29.29" text-anchor="middle" dominant-baseline="central">NW</text>
-            </g>
-
-            <line
-                id="arrowPrainha"
-                x1="100"
-                y1="20"
-                x2="100"
-                y2="100"
-                class="arrow"
-                marker-end="url(#arrowHeadPrainha)"/>
-
-            <text
-                id="prainhaAvg"
-                x="100"
-                y="88"
-                text-anchor="middle"
-                class="avg">
-                --
-            </text>
-
-        </svg>
-
-        <div id="prainhaError" class="error-message"></div>
-
-        <div class="source">Source: ipma.pt</div>
-
-    </section>
-
-
-    <!-- LAVRADIO -->
-
-    <section class="spot">
-
-        <div class="spot-header">
-
-            <div class="spot-name">
-                Barreiro, Lavradio
-            </div>
-
-            <div id="lavradioUpdate" class="update-time">
-                --.--.-- --:--
-            </div>
-
-        </div>
-
-        <svg class="compass" viewBox="-20 -20 240 240">
-
-            <defs>
-
-                <marker
-                    id="arrowHeadLavradio"
-                    markerWidth="8"
-                    markerHeight="8"
-                    refX="6"
-                    refY="3"
-                    orient="auto"
-                    markerUnits="strokeWidth">
-
-                    <path
-                        d="M0,0 L0,6 L7,3 z"
-                        class="wind-arrow-head"/>
-
-                </marker>
-
-                <clipPath id="compassClipLavradio">
-                    <circle cx="100" cy="100" r="90"/>
-                </clipPath>
-
-            </defs>
-
-            <!-- Fond sable du cadran -->
-            <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="#efe5d4"/>
-
-            <!-- Zone eau : découpée pour ne jamais déborder du cercle -->
-            <g clip-path="url(#compassClipLavradio)">
-
-                <!-- Côte à 180°, sable côté W (calculée pour passer exactement par le centre) -->
-                <path
-                    d="M 100.0 400.0 L 100.0 -200.0 L 500.0 -200.0 L 500.0 400.0 Z"
-                    fill="#4da6d9"/>
-
-            </g>
-
-            <!-- Contour du cercle redessiné par-dessus : toujours entièrement visible -->
-            <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="none"
-                stroke="#2f5fd0"
-                stroke-width="2"/>
-
-            <!-- Lettres d'orientation, à l'extérieur du cercle -->
-            <g class="compass-labels">
-                <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
-                <text x="170.71" y="29.29" text-anchor="middle" dominant-baseline="central">NE</text>
-                <text x="200" y="100" text-anchor="middle" dominant-baseline="central">E</text>
-                <text x="170.71" y="170.71" text-anchor="middle" dominant-baseline="central">SE</text>
-                <text x="100" y="200" text-anchor="middle" dominant-baseline="central">S</text>
-                <text x="29.29" y="170.71" text-anchor="middle" dominant-baseline="central">SW</text>
-                <text x="0" y="100" text-anchor="middle" dominant-baseline="central">W</text>
-                <text x="29.29" y="29.29" text-anchor="middle" dominant-baseline="central">NW</text>
-            </g>
-
-            <line
-                id="arrowLavradio"
-                x1="100"
-                y1="20"
-                x2="100"
-                y2="100"
-                class="arrow"
-                marker-end="url(#arrowHeadLavradio)"/>
-
-            <text
-                id="lavradioAvg"
-                x="100"
-                y="88"
-                text-anchor="middle"
-                class="avg">
-                --
-            </text>
-
-        </svg>
-
-        <div id="lavradioError" class="error-message"></div>
-
-        <div class="source">Source: ipma.pt</div>
-
-    </section>
-
-
-    <!-- Cartes AML générées dynamiquement selon la sélection de l'utilisateur -->
-    <div id="amlStationsContainer" class="dashboard-aml-wrapper"></div>
+    <!-- Toutes les cartes (IPMA, Hidromod, AML, futures sources) sont générées
+         dynamiquement ici, selon la sélection de l'utilisateur. -->
+    <div id="spotsContainer" class="dashboard-wrapper"></div>
 
 </main>
 
@@ -574,15 +248,25 @@ h1 {
 
 /* =========================================================
    BLOC 1 : CONFIGURATION
+   ---------------------------------------------------------
+   ALL_SPOTS est le catalogue unique de TOUTES les cartes du
+   dashboard, quelle que soit leur source (IPMA, Hidromod, AML,
+   ou une future source à ajouter). Chaque entrée décrit :
+     - key            : identifiant unique stable (utilisé pour
+                        générer les ids DOM et la persistance)
+     - name           : nom affiché (utilisé aussi pour le tri
+                        alphabétique de la liste de sélection)
+     - source         : "ipma" | "hidromod" | "aml" (dispatch
+                        vers la bonne fonction de chargement)
+     - sourceLabel    : texte affiché en bas de carte
+     - coastlinePath  : optionnel, polygone SVG de la zone eau
+                        (uniquement pour les 4 spots déjà définis
+                        manuellement ; ne pas y toucher)
+     - ipmaStationId / amlStationId : id spécifique à la source
 ========================================================= */
 
 const IPMA_URL =
     "https://api.ipma.pt/open-data/observation/meteorology/stations/observations.json";
-
-const IPMA_STATIONS = {
-    prainha: "1210773",   // Almada, P.Rainha (ID confirmé via stations.json)
-    lavradio: "1210766"
-};
 
 const HIDROMOD_SERIES = {
     gust: 446,
@@ -590,48 +274,85 @@ const HIDROMOD_SERIES = {
     direction: 449
 };
 
-// Worker Cloudflare qui fait office de proxy pour clima.aml.pt : charge la
-// page publique /dashboard d'une station (simple GET, pas de session/CSRF)
-// et en extrait les valeurs par regex. Voir aml-proxy-standalone.js.
+// Worker Cloudflare qui fait office de proxy pour clima.aml.pt.
 const AML_URL_BASE =
     "https://aml-proxy.busetti-f.workers.dev/api/aml-station";
 
-// Liste complète des stations AML (récupérée le 25.08.2026 depuis
-// https://clima.aml.pt/page/publico). IDs 46 et 52 n'existent pas côté AML.
-const AML_STATIONS = [
-    { id: "27", name: "ALMADA" },
-    { id: "28", name: "CASCAIS (Estoril)" },
-    { id: "29", name: "ALCOCHETE" },
-    { id: "30", name: "OEIRAS" },
-    { id: "31", name: "SINTRA (Algueirão-Mem Martins)" },
-    { id: "32", name: "LISBOA (Carnide)" },
-    { id: "33", name: "AMADORA" },
-    { id: "34", name: "ODIVELAS" },
-    { id: "35", name: "MAFRA (Cheleiros)" },
-    { id: "36", name: "LOURES" },
-    { id: "37", name: "SETÚBAL" },
-    { id: "38", name: "BARREIRO" },
-    { id: "39", name: "SEIXAL (Santa Marta do Pinhal)" },
-    { id: "40", name: "MOITA (Alhos Vedros)" },
-    { id: "41", name: "SESIMBRA (Quinta do Conde)" },
-    { id: "42", name: "PALMELA (Pinhal Novo)" },
-    { id: "43", name: "MONTIJO" },
-    { id: "44", name: "VILA FRANCA DE XIRA" },
-    { id: "45", name: "MAFRA (Encarnação)" },
-    { id: "47", name: "MAFRA (Malveira)" },
-    { id: "48", name: "MAFRA (Vila - Paços do Concelho)" },
-    { id: "49", name: "MAFRA (Tapada)" },
-    { id: "50", name: "MAFRA (Vila Franca do Rosário)" },
-    { id: "51", name: "SINTRA (Venda Seca)" },
-    { id: "53", name: "PALMELA (Castelo)" },
-    { id: "54", name: "SINTRA (Quinta da Regaleira)" },
-    { id: "55", name: "PALMELA (Lau)" },
-    { id: "56", name: "SEIXAL (Serviços Centrais CMS)" },
-    { id: "57", name: "SEIXAL (Fernão Ferro)" },
-    { id: "58", name: "SEIXAL (Verdizela)" }
+const ALL_SPOTS = [
+
+    // --- Les 4 spots définis manuellement : NE PAS MODIFIER coastlinePath ---
+    {
+        key: "baliza",
+        name: "Portinho da Arrábida (baliza)",
+        source: "hidromod",
+        sourceLabel: "apss.hidromod.com",
+        coastlinePath: "M -129.8 292.8 L 329.8 -92.8 L 586.9 213.6 L 127.3 599.3 Z"
+    },
+    {
+        key: "prainha",
+        name: "Praia da Rainha",
+        source: "ipma",
+        sourceLabel: "ipma.pt",
+        ipmaStationId: "1210773",
+        coastlinePath: "M 236.2 367.3 L -36.2 -167.3 L -392.6 14.3 L -120.2 548.9 Z"
+    },
+    {
+        key: "lavradio",
+        name: "Barreiro, Lavradio",
+        source: "ipma",
+        sourceLabel: "ipma.pt",
+        ipmaStationId: "1210766",
+        coastlinePath: "M 100.0 400.0 L 100.0 -200.0 L 500.0 -200.0 L 500.0 400.0 Z"
+    },
+    {
+        key: "aml-37",
+        name: "SETÚBAL",
+        source: "aml",
+        sourceLabel: "clima.aml.pt",
+        amlStationId: "37",
+        coastlinePath: "M -200.0 100.0 L 400.0 100.0 L 400.0 500.0 L -200.0 500.0 Z"
+    },
+
+    // --- Reste du catalogue AML (25.08.2026, clima.aml.pt/page/publico) ---
+    // Pas de coastlinePath : cercle uni tant qu'on n'a pas défini leur ligne de côte.
+    { key: "aml-27", name: "ALMADA", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "27" },
+    { key: "aml-28", name: "CASCAIS (Estoril)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "28" },
+    { key: "aml-29", name: "ALCOCHETE", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "29" },
+    { key: "aml-30", name: "OEIRAS", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "30" },
+    { key: "aml-31", name: "SINTRA (Algueirão-Mem Martins)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "31" },
+    { key: "aml-32", name: "LISBOA (Carnide)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "32" },
+    { key: "aml-33", name: "AMADORA", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "33" },
+    { key: "aml-34", name: "ODIVELAS", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "34" },
+    { key: "aml-35", name: "MAFRA (Cheleiros)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "35" },
+    { key: "aml-36", name: "LOURES", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "36" },
+    { key: "aml-38", name: "BARREIRO", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "38" },
+    { key: "aml-39", name: "SEIXAL (Santa Marta do Pinhal)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "39" },
+    { key: "aml-40", name: "MOITA (Alhos Vedros)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "40" },
+    { key: "aml-41", name: "SESIMBRA (Quinta do Conde)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "41" },
+    { key: "aml-42", name: "PALMELA (Pinhal Novo)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "42" },
+    { key: "aml-43", name: "MONTIJO", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "43" },
+    { key: "aml-44", name: "VILA FRANCA DE XIRA", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "44" },
+    { key: "aml-45", name: "MAFRA (Encarnação)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "45" },
+    { key: "aml-47", name: "MAFRA (Malveira)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "47" },
+    { key: "aml-48", name: "MAFRA (Vila - Paços do Concelho)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "48" },
+    { key: "aml-49", name: "MAFRA (Tapada)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "49" },
+    { key: "aml-50", name: "MAFRA (Vila Franca do Rosário)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "50" },
+    { key: "aml-51", name: "SINTRA (Venda Seca)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "51" },
+    { key: "aml-53", name: "PALMELA (Castelo)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "53" },
+    { key: "aml-54", name: "SINTRA (Quinta da Regaleira)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "54" },
+    { key: "aml-55", name: "PALMELA (Lau)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "55" },
+    { key: "aml-56", name: "SEIXAL (Serviços Centrais CMS)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "56" },
+    { key: "aml-57", name: "SEIXAL (Fernão Ferro)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "57" },
+    { key: "aml-58", name: "SEIXAL (Verdizela)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "58" }
+
 ];
 
-const STATION_SELECTION_STORAGE_KEY = "windDashboard.amlSelectedStations";
+const SPOT_SELECTION_STORAGE_KEY = "windDashboard.selectedSpots";
+
+
+function getSortedSpots() {
+    return [...ALL_SPOTS].sort((a, b) => a.name.localeCompare(b.name));
+}
 
 
 /* =========================================================
@@ -693,8 +414,6 @@ function formatIPMATimestamp(timestamp) {
 
 function formatAMLTimestamp(dateStr, timeStr) {
 
-    // date "JJ-MM-AAAA" + heure "HH:MM", déjà en heure locale Portugal.
-
     if (!dateStr || !timeStr) {
         return "--.--.-- --:--";
     }
@@ -754,6 +473,11 @@ function setError(elementId, message = "") {
 }
 
 
+function elementId(spotKey, suffix) {
+    return "spot-" + spotKey + "-" + suffix;
+}
+
+
 /* =========================================================
    BLOC 3 : FLÈCHES DE DIRECTION
    ---------------------------------------------------------
@@ -785,7 +509,7 @@ function setDirectionDegrees(lineId, degrees) {
 
     const centerX = 100;
     const centerY = 100;
-    const length = 80; // distance du bord (départ de la flèche) au centre
+    const length = 80;
 
     const radians =
         (direction - 90) * Math.PI / 180;
@@ -823,7 +547,64 @@ function getIPMADirectionDegrees(directionId) {
 
 
 /* =========================================================
-   BLOC 4 : DONNÉES IPMA (P.RAINHA, LAVRADIO)
+   BLOC 4 : MISE À JOUR GÉNÉRIQUE D'UNE CARTE
+   ---------------------------------------------------------
+   Toutes les sources (IPMA, Hidromod, AML, futures sources)
+   convergent vers ces deux fonctions pour mettre à jour l'affichage.
+   Si la carte n'est pas actuellement rendue (spot non sélectionné),
+   les éléments DOM sont absents et ces fonctions ne font rien
+   (grâce aux gardes déjà présentes dans les helpers du bloc 2/3).
+========================================================= */
+
+function updateSpotDisplay(spotKey, options) {
+
+    const { average = NaN, gust = NaN, directionDeg = null, timeText = "--.--.-- --:--" } =
+        options || {};
+
+    const arrowId = elementId(spotKey, "arrow");
+    const avgId = elementId(spotKey, "avg");
+    const gustId = elementId(spotKey, "gust");
+    const updateId = elementId(spotKey, "update");
+    const errorId = elementId(spotKey, "error");
+
+    setArrowVisibility(arrowId, false);
+
+    displayRoundedValue(avgId, average);
+    displayRoundedValue(gustId, gust);
+
+    if (Number.isFinite(directionDeg)) {
+        setDirectionDegrees(arrowId, directionDeg);
+        setArrowVisibility(arrowId, true);
+    }
+
+    const updateElement = document.getElementById(updateId);
+
+    if (updateElement) {
+        updateElement.textContent = timeText;
+    }
+
+    setError(errorId);
+
+}
+
+
+function setSpotUnavailable(spotKey, message) {
+
+    const arrowId = elementId(spotKey, "arrow");
+    const avgId = elementId(spotKey, "avg");
+    const gustId = elementId(spotKey, "gust");
+    const errorId = elementId(spotKey, "error");
+
+    setArrowVisibility(arrowId, false);
+    displayRoundedValue(avgId, NaN);
+    displayRoundedValue(gustId, NaN);
+    setError(errorId, message);
+
+}
+
+
+/* =========================================================
+   BLOC 5 : DONNÉES IPMA
 ========================================================= */
 
 function findLatestIPMAObservation(data, stationId) {
@@ -851,132 +632,55 @@ function findLatestIPMAObservation(data, stationId) {
 }
 
 
-function updateIPMAStation(
-    stationResult,
-    valueElementId,
-    arrowElementId,
-    updateElementId,
-    errorElementId
-) {
+function updateIPMASpot(spot, data) {
 
-    setArrowVisibility(arrowElementId, false);
+    const result = findLatestIPMAObservation(data, spot.ipmaStationId);
 
-    if (!stationResult) {
-
-        displayRoundedValue(valueElementId, NaN);
-
-        setError(
-            errorElementId,
-            "No observation available"
-        );
-
+    if (!result) {
+        setSpotUnavailable(spot.key, "No observation available");
         return;
     }
 
-    const { timestamp, observation } =
-        stationResult;
+    const { timestamp, observation } = result;
 
-    const windKnots =
-        kmhToKnots(
-            observation.intensidadeVentoKM
-        );
+    const average = kmhToKnots(observation.intensidadeVentoKM);
+    const directionDeg = getIPMADirectionDegrees(observation.idDireccVento);
 
-    displayRoundedValue(
-        valueElementId,
-        windKnots
-    );
-
-    const degrees =
-        getIPMADirectionDegrees(
-            observation.idDireccVento
-        );
-
-    if (degrees !== null) {
-
-        setDirectionDegrees(
-            arrowElementId,
-            degrees
-        );
-
-        setArrowVisibility(arrowElementId, true);
-
-    }
-
-    document.getElementById(
-        updateElementId
-    ).textContent =
-        formatIPMATimestamp(timestamp);
-
-    setError(errorElementId);
+    updateSpotDisplay(spot.key, {
+        average,
+        gust: NaN,
+        directionDeg,
+        timeText: formatIPMATimestamp(timestamp)
+    });
 
 }
 
 
 async function loadIPMA() {
 
-    setError("prainhaError");
-    setError("lavradioError");
+    const ipmaSpots = ALL_SPOTS.filter(spot => spot.source === "ipma");
 
     try {
 
         const response = await fetch(
             IPMA_URL + "?cache=" + Date.now(),
-            {
-                cache: "no-store"
-            }
+            { cache: "no-store" }
         );
 
         if (!response.ok) {
-            throw new Error(
-                "HTTP IPMA " + response.status
-            );
+            throw new Error("HTTP IPMA " + response.status);
         }
 
         const data = await response.json();
 
-        const pRainhaResult =
-            findLatestIPMAObservation(
-                data,
-                IPMA_STATIONS.prainha
-            );
-
-        const lavradioResult =
-            findLatestIPMAObservation(
-                data,
-                IPMA_STATIONS.lavradio
-            );
-
-        updateIPMAStation(
-            pRainhaResult,
-            "prainhaAvg",
-            "arrowPrainha",
-            "prainhaUpdate",
-            "prainhaError"
-        );
-
-        updateIPMAStation(
-            lavradioResult,
-            "lavradioAvg",
-            "arrowLavradio",
-            "lavradioUpdate",
-            "lavradioError"
-        );
+        ipmaSpots.forEach(spot => updateIPMASpot(spot, data));
 
     }
     catch (error) {
 
-        console.error(
-            "Erreur IPMA :",
-            error
-        );
+        console.error("Erreur IPMA :", error);
 
-        displayRoundedValue("prainhaAvg", NaN);
-        displayRoundedValue("lavradioAvg", NaN);
-        setArrowVisibility("arrowPrainha", false);
-        setArrowVisibility("arrowLavradio", false);
-
-        setError("prainhaError");
-        setError("lavradioError");
+        ipmaSpots.forEach(spot => setSpotUnavailable(spot.key, ""));
 
     }
 
@@ -984,7 +688,7 @@ async function loadIPMA() {
 
 
 /* =========================================================
-   BLOC 5 : DONNÉES HIDROMOD (BALIZA 2)
+   BLOC 6 : DONNÉES HIDROMOD
 ========================================================= */
 
 function getHidromodValue(seriesId, data) {
@@ -1036,29 +740,13 @@ function parseHidromodDate(dateValue) {
 }
 
 
-function updateHidromodDisplay(average, gust, direction, calculationDate) {
-
-    setArrowVisibility("arrowBaliza", false);
-
-    displayRoundedValue("balizaAvg", average);
-    displayRoundedValue("balizaGust", gust);
-
-    if (direction !== null) {
-
-        setDirectionDegrees("arrowBaliza", direction);
-        setArrowVisibility("arrowBaliza", true);
-
-    }
-
-    document.getElementById("balizaUpdate").textContent =
-        formatDateObject(calculationDate);
-
-}
-
-
 async function loadHidromod() {
 
-    setError("balizaError");
+    const spot = ALL_SPOTS.find(s => s.source === "hidromod");
+
+    if (!spot) {
+        return;
+    }
 
     try {
 
@@ -1075,63 +763,40 @@ async function loadHidromod() {
 
         const response = await fetch(
             url,
-            {
-                cache: "no-store"
-            }
+            { cache: "no-store" }
         );
 
         if (!response.ok) {
-            throw new Error(
-                "HTTP Hidromod " + response.status
-            );
+            throw new Error("HTTP Hidromod " + response.status);
         }
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
         const average =
-            getHidromodValue(
-                HIDROMOD_SERIES.average,
-                data
-            );
+            getHidromodValue(HIDROMOD_SERIES.average, data);
 
         const gust =
-            getHidromodValue(
-                HIDROMOD_SERIES.gust,
-                data
-            );
+            getHidromodValue(HIDROMOD_SERIES.gust, data);
 
         const direction =
-            getHidromodValue(
-                HIDROMOD_SERIES.direction,
-                data
-            );
+            getHidromodValue(HIDROMOD_SERIES.direction, data);
 
         const calculationDate =
-            parseHidromodDate(
-                data.CalculationTime
-            );
+            parseHidromodDate(data.CalculationTime);
 
-        updateHidromodDisplay(
+        updateSpotDisplay(spot.key, {
             average,
             gust,
-            direction,
-            calculationDate
-        );
+            directionDeg: direction,
+            timeText: formatDateObject(calculationDate)
+        });
 
     }
     catch (error) {
 
-        console.error(
-            "Erreur Hidromod :",
-            error
-        );
+        console.error("Erreur Hidromod :", error);
 
-        displayRoundedValue("balizaAvg", NaN);
-        displayRoundedValue("balizaGust", NaN);
-        setArrowVisibility("arrowBaliza", false);
-
-        setError("balizaError");
+        setSpotUnavailable(spot.key, "");
 
     }
 
@@ -1139,79 +804,142 @@ async function loadHidromod() {
 
 
 /* =========================================================
-   BLOC 5-BIS : DONNÉES AML (30 STATIONS, SÉLECTION UTILISATEUR)
-   ---------------------------------------------------------
-   - AML_STATIONS : catalogue complet (id + nom officiel).
-   - selectedStationIds : sous-ensemble actuellement affiché,
-     persisté dans localStorage.
-   - Les cartes sont générées dynamiquement en HTML (buildAmlCardHtml)
-     et injectées dans #amlStationsContainer.
+   BLOC 7 : DONNÉES AML
 ========================================================= */
 
-function loadStationSelection() {
+async function loadAmlSpot(spot) {
 
     try {
 
-        const raw = localStorage.getItem(STATION_SELECTION_STORAGE_KEY);
+        const response = await fetch(
+            AML_URL_BASE + "?station=" + spot.amlStationId,
+            { cache: "no-store" }
+        );
+
+        if (!response.ok) {
+            throw new Error("HTTP AML " + response.status);
+        }
+
+        const data = await response.json();
+
+        if (data && data.error) {
+            throw new Error(data.error);
+        }
+
+        const average = kmhToKnots(data.averageSpeedKmh);
+        const gust = kmhToKnots(data.gustSpeedKmh);
+
+        updateSpotDisplay(spot.key, {
+            average,
+            gust,
+            directionDeg: data.averageDirectionDeg,
+            timeText: formatAMLTimestamp(data.date, data.time)
+        });
+
+    }
+    catch (error) {
+
+        console.error("Erreur AML " + spot.key + " :", error);
+
+        setSpotUnavailable(spot.key, "");
+
+    }
+
+}
+
+
+async function loadAllAmlSpots() {
+
+    const amlSpots =
+        ALL_SPOTS.filter(
+            spot => spot.source === "aml" && selectedSpotKeys.includes(spot.key)
+        );
+
+    await Promise.allSettled(amlSpots.map(loadAmlSpot));
+
+}
+
+
+/* =========================================================
+   BLOC 8 : SÉLECTION DES CARTES (persistée, triée alphabétiquement)
+========================================================= */
+
+function loadSpotSelection() {
+
+    try {
+
+        const raw = localStorage.getItem(SPOT_SELECTION_STORAGE_KEY);
 
         if (!raw) {
-            return AML_STATIONS.map(station => station.id);
+            return ALL_SPOTS.map(spot => spot.key);
         }
 
         const parsed = JSON.parse(raw);
 
         return Array.isArray(parsed)
             ? parsed
-            : AML_STATIONS.map(station => station.id);
+            : ALL_SPOTS.map(spot => spot.key);
 
     }
     catch (error) {
 
-        console.error("Erreur lecture sélection stations :", error);
-        return AML_STATIONS.map(station => station.id);
+        console.error("Erreur lecture sélection :", error);
+        return ALL_SPOTS.map(spot => spot.key);
 
     }
 
 }
 
 
-function saveStationSelection(ids) {
+function saveSpotSelection(keys) {
 
     try {
         localStorage.setItem(
-            STATION_SELECTION_STORAGE_KEY,
-            JSON.stringify(ids)
+            SPOT_SELECTION_STORAGE_KEY,
+            JSON.stringify(keys)
         );
     }
     catch (error) {
-        console.error("Erreur sauvegarde sélection stations :", error);
+        console.error("Erreur sauvegarde sélection :", error);
     }
 
 }
 
 
-let selectedStationIds = loadStationSelection();
+let selectedSpotKeys = loadSpotSelection();
 
 
-function amlElementId(stationId, suffix) {
-    return "aml" + stationId + suffix;
-}
+function buildCardHtml(spot) {
 
+    const arrowId = elementId(spot.key, "arrow");
+    const markerId = elementId(spot.key, "arrowHead");
+    const clipId = elementId(spot.key, "clip");
+    const avgId = elementId(spot.key, "avg");
+    const gustId = elementId(spot.key, "gust");
+    const updateId = elementId(spot.key, "update");
+    const errorId = elementId(spot.key, "error");
 
-function buildAmlCardHtml(station) {
+    const hasCoastline = Boolean(spot.coastlinePath);
 
-    const arrowId = amlElementId(station.id, "Arrow");
-    const markerId = amlElementId(station.id, "ArrowHead");
-    const avgId = amlElementId(station.id, "Avg");
-    const gustId = amlElementId(station.id, "Gust");
-    const updateId = amlElementId(station.id, "Update");
-    const errorId = amlElementId(station.id, "Error");
+    const clipDef = hasCoastline
+        ? `<clipPath id="${clipId}"><circle cx="100" cy="100" r="90"/></clipPath>`
+        : "";
+
+    const circleBlock = hasCoastline
+        ? `
+            <circle cx="100" cy="100" r="90" fill="#efe5d4"/>
+            <g clip-path="url(#${clipId})">
+                <path d="${spot.coastlinePath}" fill="#4da6d9"/>
+            </g>
+            <circle cx="100" cy="100" r="90" fill="none" stroke="#2f5fd0" stroke-width="2"/>
+        `
+        : `<circle cx="100" cy="100" r="90" fill="#efe5d4" stroke="#2f5fd0" stroke-width="2"/>`;
 
     return `
-    <section class="spot" data-station-id="${station.id}">
+    <section class="spot" data-spot-key="${spot.key}">
 
         <div class="spot-header">
-            <div class="spot-name">${station.name}</div>
+            <div class="spot-name">${spot.name}</div>
             <div id="${updateId}" class="update-time">--.--.-- --:--</div>
         </div>
 
@@ -1221,9 +949,10 @@ function buildAmlCardHtml(station) {
                 <marker id="${markerId}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
                     <path d="M0,0 L0,6 L7,3 z" class="wind-arrow-head"/>
                 </marker>
+                ${clipDef}
             </defs>
 
-            <circle cx="100" cy="100" r="90" fill="#efe5d4" stroke="#2f5fd0" stroke-width="2"/>
+            ${circleBlock}
 
             <g class="compass-labels">
                 <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
@@ -1245,22 +974,22 @@ function buildAmlCardHtml(station) {
 
         <div id="${errorId}" class="error-message"></div>
 
-        <div class="source">Source: clima.aml.pt</div>
+        <div class="source">Source: ${spot.sourceLabel}</div>
 
     </section>`;
 
 }
 
 
-function renderAmlCards() {
+function renderCards() {
 
-    const container = document.getElementById("amlStationsContainer");
+    const container = document.getElementById("spotsContainer");
 
-    const visibleStations =
-        AML_STATIONS.filter(station => selectedStationIds.includes(station.id));
+    const visibleSpots =
+        getSortedSpots().filter(spot => selectedSpotKeys.includes(spot.key));
 
     container.innerHTML =
-        visibleStations.map(buildAmlCardHtml).join("");
+        visibleSpots.map(buildCardHtml).join("");
 
 }
 
@@ -1269,115 +998,15 @@ function renderStationCheckboxes() {
 
     const list = document.getElementById("stationCheckboxList");
 
-    list.innerHTML = AML_STATIONS.map(station => `
+    list.innerHTML = getSortedSpots().map(spot => `
         <label class="station-checkbox-item">
-            <input type="checkbox" value="${station.id}" ${selectedStationIds.includes(station.id) ? "checked" : ""}>
-            ${station.name}
+            <input type="checkbox" value="${spot.key}" ${selectedSpotKeys.includes(spot.key) ? "checked" : ""}>
+            ${spot.name}
         </label>
     `).join("");
 
 }
 
-
-function updateAmlStationDisplay(stationId, data) {
-
-    const arrowId = amlElementId(stationId, "Arrow");
-    const avgId = amlElementId(stationId, "Avg");
-    const gustId = amlElementId(stationId, "Gust");
-    const updateId = amlElementId(stationId, "Update");
-    const errorId = amlElementId(stationId, "Error");
-
-    setArrowVisibility(arrowId, false);
-
-    if (!data) {
-
-        displayRoundedValue(avgId, NaN);
-        displayRoundedValue(gustId, NaN);
-
-        setError(errorId, "No observation available");
-
-        return;
-    }
-
-    const average = kmhToKnots(data.averageSpeedKmh);
-    const gust = kmhToKnots(data.gustSpeedKmh);
-
-    displayRoundedValue(avgId, average);
-    displayRoundedValue(gustId, gust);
-
-    if (Number.isFinite(data.averageDirectionDeg)) {
-
-        setDirectionDegrees(arrowId, data.averageDirectionDeg);
-        setArrowVisibility(arrowId, true);
-
-    }
-
-    const updateElement = document.getElementById(updateId);
-
-    if (updateElement) {
-        updateElement.textContent = formatAMLTimestamp(data.date, data.time);
-    }
-
-    setError(errorId);
-
-}
-
-
-async function loadAmlStation(stationId) {
-
-    const errorId = amlElementId(stationId, "Error");
-
-    setError(errorId);
-
-    try {
-
-        const response = await fetch(
-            AML_URL_BASE + "?station=" + stationId,
-            { cache: "no-store" }
-        );
-
-        if (!response.ok) {
-            throw new Error("HTTP AML " + response.status);
-        }
-
-        const data = await response.json();
-
-        if (data && data.error) {
-            throw new Error(data.error);
-        }
-
-        updateAmlStationDisplay(stationId, data);
-
-    }
-    catch (error) {
-
-        console.error("Erreur AML station " + stationId + " :", error);
-
-        const avgId = amlElementId(stationId, "Avg");
-        const gustId = amlElementId(stationId, "Gust");
-        const arrowId = amlElementId(stationId, "Arrow");
-
-        displayRoundedValue(avgId, NaN);
-        displayRoundedValue(gustId, NaN);
-        setArrowVisibility(arrowId, false);
-
-        setError(errorId);
-
-    }
-
-}
-
-
-async function loadAllAmlStations() {
-
-    await Promise.allSettled(
-        selectedStationIds.map(stationId => loadAmlStation(stationId))
-    );
-
-}
-
-
-/* --- Panneau de configuration des stations --- */
 
 function initStationSettingsPanel() {
 
@@ -1404,43 +1033,43 @@ function initStationSettingsPanel() {
             return;
         }
 
-        const stationId = target.value;
+        const spotKey = target.value;
 
         if (target.checked) {
 
-            if (!selectedStationIds.includes(stationId)) {
-                selectedStationIds = [...selectedStationIds, stationId];
+            if (!selectedSpotKeys.includes(spotKey)) {
+                selectedSpotKeys = [...selectedSpotKeys, spotKey];
             }
 
         }
         else {
 
-            selectedStationIds = selectedStationIds.filter(id => id !== stationId);
+            selectedSpotKeys = selectedSpotKeys.filter(key => key !== spotKey);
 
         }
 
-        saveStationSelection(selectedStationIds);
-        renderAmlCards();
-        loadAllAmlStations();
+        saveSpotSelection(selectedSpotKeys);
+        renderCards();
+        refreshDashboard();
 
     });
 
     selectAllBtn.addEventListener("click", () => {
 
-        selectedStationIds = AML_STATIONS.map(station => station.id);
-        saveStationSelection(selectedStationIds);
+        selectedSpotKeys = ALL_SPOTS.map(spot => spot.key);
+        saveSpotSelection(selectedSpotKeys);
         renderStationCheckboxes();
-        renderAmlCards();
-        loadAllAmlStations();
+        renderCards();
+        refreshDashboard();
 
     });
 
     selectNoneBtn.addEventListener("click", () => {
 
-        selectedStationIds = [];
-        saveStationSelection(selectedStationIds);
+        selectedSpotKeys = [];
+        saveSpotSelection(selectedSpotKeys);
         renderStationCheckboxes();
-        renderAmlCards();
+        renderCards();
 
     });
 
@@ -1448,7 +1077,7 @@ function initStationSettingsPanel() {
 
 
 /* =========================================================
-   BLOC 6 : CHARGEMENT ET ACTUALISATION
+   BLOC 9 : CHARGEMENT ET ACTUALISATION
 ========================================================= */
 
 async function refreshDashboard() {
@@ -1456,14 +1085,14 @@ async function refreshDashboard() {
     await Promise.allSettled([
         loadIPMA(),
         loadHidromod(),
-        loadAllAmlStations()
+        loadAllAmlSpots()
     ]);
 
 }
 
 
 renderStationCheckboxes();
-renderAmlCards();
+renderCards();
 initStationSettingsPanel();
 
 refreshDashboard();
