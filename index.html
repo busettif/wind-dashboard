@@ -24,13 +24,89 @@ body {
 h1 {
     text-align: center;
     font-size: 24px;
+    margin: 0;
+}
+
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
     margin: 10px 0 15px;
+}
+
+.settings-btn {
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+}
+
+.settings-btn:hover {
+    background: #f0f0f0;
+}
+
+.station-settings-panel {
+    max-width: 1360px;
+    margin: 0 auto 15px;
+    background: white;
+    border-radius: 12px;
+    padding: 12px 16px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
+}
+
+.station-settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.station-settings-header button {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    cursor: pointer;
+    margin-left: 6px;
+}
+
+.station-settings-header button:hover {
+    background: #eee;
+}
+
+.station-checkbox-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 4px 12px;
+    max-height: 280px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.station-checkbox-item {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 2px 0;
 }
 
 .dashboard {
     width: 100%;
     max-width: 520px;
     margin: auto;
+}
+
+.dashboard-aml-wrapper {
+    display: contents;
 }
 
 .spot {
@@ -50,7 +126,7 @@ h1 {
 }
 
 .spot-name {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
 }
 
@@ -136,7 +212,25 @@ h1 {
 
 <body>
 
-<h1>🌬 Wind Dashboard</h1>
+<div class="header-row">
+    <h1>🌬 Wind Dashboard</h1>
+    <button id="stationSettingsBtn" class="settings-btn" type="button">⚙ Stations</button>
+</div>
+
+<div id="stationSettingsPanel" class="station-settings-panel" hidden>
+
+    <div class="station-settings-header">
+        <strong>AML Stations</strong>
+        <div>
+            <button id="selectAllBtn" type="button">Select all</button>
+            <button id="selectNoneBtn" type="button">Select none</button>
+            <button id="closeSettingsBtn" type="button">Close</button>
+        </div>
+    </div>
+
+    <div id="stationCheckboxList" class="station-checkbox-list"></div>
+
+</div>
 
 <main class="dashboard">
 
@@ -188,7 +282,7 @@ h1 {
                 r="90"
                 fill="#efe5d4"/>
 
-            <!-- Zone mer + trait de côte : découpés pour ne jamais déborder du cercle -->
+            <!-- Zone eau : découpée pour ne jamais déborder du cercle -->
             <g clip-path="url(#compassClipBaliza)">
 
                 <!-- Côte à 230°, sable côté NW (calculée pour passer exactement par le centre) -->
@@ -303,7 +397,7 @@ h1 {
                 r="90"
                 fill="#efe5d4"/>
 
-            <!-- Zone mer + trait de côte : découpés pour ne jamais déborder du cercle -->
+            <!-- Zone eau : découpée pour ne jamais déborder du cercle -->
             <g clip-path="url(#compassClipPrainha)">
 
                 <!-- Côte à 153°, sable côté E (calculée pour passer exactement par le centre) -->
@@ -409,7 +503,7 @@ h1 {
                 r="90"
                 fill="#efe5d4"/>
 
-            <!-- Zone mer + trait de côte : découpés pour ne jamais déborder du cercle -->
+            <!-- Zone eau : découpée pour ne jamais déborder du cercle -->
             <g clip-path="url(#compassClipLavradio)">
 
                 <!-- Côte à 180°, sable côté W (calculée pour passer exactement par le centre) -->
@@ -467,119 +561,8 @@ h1 {
     </section>
 
 
-    <!-- CÂMARA MUNICIPAL DE SETÚBAL (AML, station 37) -->
-
-    <section class="spot">
-
-        <div class="spot-header">
-
-            <div class="spot-name">
-                Câmara Municipal de Setúbal
-            </div>
-
-            <div id="setubalUpdate" class="update-time">
-                --.--.-- --:--
-            </div>
-
-        </div>
-
-        <svg class="compass" viewBox="-20 -20 240 240">
-
-            <defs>
-
-                <marker
-                    id="arrowHeadSetubal"
-                    markerWidth="8"
-                    markerHeight="8"
-                    refX="6"
-                    refY="3"
-                    orient="auto"
-                    markerUnits="strokeWidth">
-
-                    <path
-                        d="M0,0 L0,6 L7,3 z"
-                        class="wind-arrow-head"/>
-
-                </marker>
-
-                <clipPath id="compassClipSetubal">
-                    <circle cx="100" cy="100" r="90"/>
-                </clipPath>
-
-            </defs>
-
-            <!-- Fond sable du cadran -->
-            <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="#efe5d4"/>
-
-            <!-- Zone eau : découpée pour ne jamais déborder du cercle -->
-            <g clip-path="url(#compassClipSetubal)">
-
-                <!-- Ligne à 270°, sable en haut (Nord) -->
-                <path
-                    d="M -200.0 100.0 L 400.0 100.0 L 400.0 500.0 L -200.0 500.0 Z"
-                    fill="#4da6d9"/>
-
-            </g>
-
-            <!-- Contour du cercle redessiné par-dessus : toujours entièrement visible -->
-            <circle
-                cx="100"
-                cy="100"
-                r="90"
-                fill="none"
-                stroke="#2f5fd0"
-                stroke-width="2"/>
-
-            <!-- Lettres d'orientation, à l'extérieur du cercle -->
-            <g class="compass-labels">
-                <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
-                <text x="170.71" y="29.29" text-anchor="middle" dominant-baseline="central">NE</text>
-                <text x="200" y="100" text-anchor="middle" dominant-baseline="central">E</text>
-                <text x="170.71" y="170.71" text-anchor="middle" dominant-baseline="central">SE</text>
-                <text x="100" y="200" text-anchor="middle" dominant-baseline="central">S</text>
-                <text x="29.29" y="170.71" text-anchor="middle" dominant-baseline="central">SW</text>
-                <text x="0" y="100" text-anchor="middle" dominant-baseline="central">W</text>
-                <text x="29.29" y="29.29" text-anchor="middle" dominant-baseline="central">NW</text>
-            </g>
-
-            <line
-                id="arrowSetubal"
-                x1="100"
-                y1="20"
-                x2="100"
-                y2="100"
-                class="arrow"
-                marker-end="url(#arrowHeadSetubal)"/>
-
-            <text
-                id="setubalAvg"
-                x="100"
-                y="83"
-                text-anchor="middle"
-                class="avg">
-                --
-            </text>
-
-            <text
-                id="setubalGust"
-                x="100"
-                y="128"
-                text-anchor="middle"
-                class="gust">
-                --
-            </text>
-
-        </svg>
-
-        <div id="setubalError" class="error-message"></div>
-
-        <div class="source">Source: clima.aml.pt</div>
-
-    </section>
+    <!-- Cartes AML générées dynamiquement selon la sélection de l'utilisateur -->
+    <div id="amlStationsContainer" class="dashboard-aml-wrapper"></div>
 
 </main>
 
@@ -591,10 +574,6 @@ h1 {
 
 /* =========================================================
    BLOC 1 : CONFIGURATION
-   ---------------------------------------------------------
-   Constantes globales : URL des API, identifiants des
-   stations IPMA, identifiants des séries temporelles
-   Hidromod (Baliza 2).
 ========================================================= */
 
 const IPMA_URL =
@@ -611,18 +590,52 @@ const HIDROMOD_SERIES = {
     direction: 449
 };
 
-// Worker Cloudflare qui fait office de proxy pour clima.aml.pt (station 37 :
-// Câmara Municipal de Setúbal). Voir aml-proxy-standalone.js pour le code du proxy.
-const AML_URL =
-    "https://aml-proxy.busetti-f.workers.dev/api/aml-station?station=37";
+// Worker Cloudflare qui fait office de proxy pour clima.aml.pt : charge la
+// page publique /dashboard d'une station (simple GET, pas de session/CSRF)
+// et en extrait les valeurs par regex. Voir aml-proxy-standalone.js.
+const AML_URL_BASE =
+    "https://aml-proxy.busetti-f.workers.dev/api/aml-station";
+
+// Liste complète des stations AML (récupérée le 25.08.2026 depuis
+// https://clima.aml.pt/page/publico). IDs 46 et 52 n'existent pas côté AML.
+const AML_STATIONS = [
+    { id: "27", name: "ALMADA" },
+    { id: "28", name: "CASCAIS (Estoril)" },
+    { id: "29", name: "ALCOCHETE" },
+    { id: "30", name: "OEIRAS" },
+    { id: "31", name: "SINTRA (Algueirão-Mem Martins)" },
+    { id: "32", name: "LISBOA (Carnide)" },
+    { id: "33", name: "AMADORA" },
+    { id: "34", name: "ODIVELAS" },
+    { id: "35", name: "MAFRA (Cheleiros)" },
+    { id: "36", name: "LOURES" },
+    { id: "37", name: "SETÚBAL" },
+    { id: "38", name: "BARREIRO" },
+    { id: "39", name: "SEIXAL (Santa Marta do Pinhal)" },
+    { id: "40", name: "MOITA (Alhos Vedros)" },
+    { id: "41", name: "SESIMBRA (Quinta do Conde)" },
+    { id: "42", name: "PALMELA (Pinhal Novo)" },
+    { id: "43", name: "MONTIJO" },
+    { id: "44", name: "VILA FRANCA DE XIRA" },
+    { id: "45", name: "MAFRA (Encarnação)" },
+    { id: "47", name: "MAFRA (Malveira)" },
+    { id: "48", name: "MAFRA (Vila - Paços do Concelho)" },
+    { id: "49", name: "MAFRA (Tapada)" },
+    { id: "50", name: "MAFRA (Vila Franca do Rosário)" },
+    { id: "51", name: "SINTRA (Venda Seca)" },
+    { id: "53", name: "PALMELA (Castelo)" },
+    { id: "54", name: "SINTRA (Quinta da Regaleira)" },
+    { id: "55", name: "PALMELA (Lau)" },
+    { id: "56", name: "SEIXAL (Serviços Centrais CMS)" },
+    { id: "57", name: "SEIXAL (Fernão Ferro)" },
+    { id: "58", name: "SEIXAL (Verdizela)" }
+];
+
+const STATION_SELECTION_STORAGE_KEY = "windDashboard.amlSelectedStations";
 
 
 /* =========================================================
    BLOC 2 : UTILITAIRES GÉNÉRAUX
-   ---------------------------------------------------------
-   Fonctions de formatage (dates, nombres) et d'affichage
-   partagées par les deux sources de données. Aucune logique
-   métier IPMA/Hidromod ici.
 ========================================================= */
 
 function pad2(value) {
@@ -631,10 +644,6 @@ function pad2(value) {
 
 
 function formatDateObject(date) {
-
-    // Formate un objet Date JS -> "JJ.MM.AA HH:MM" en heure locale
-    // du navigateur. Utilisé pour Hidromod (timestamp = epoch ms,
-    // donc la conversion de fuseau horaire est automatique).
 
     if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
         return "--.--.-- --:--";
@@ -655,10 +664,6 @@ function formatDateObject(date) {
 
 
 function formatIPMATimestamp(timestamp) {
-
-    // Formate directement la chaîne "AAAA-MM-JJTHH:MM..." renvoyée
-    // par IPMA, sans passer par un objet Date : le timestamp IPMA
-    // est déjà exprimé en heure locale (pas de conversion à faire).
 
     if (!timestamp || typeof timestamp !== "string") {
         return "--.--.-- --:--";
@@ -686,9 +691,34 @@ function formatIPMATimestamp(timestamp) {
 }
 
 
+function formatAMLTimestamp(dateStr, timeStr) {
+
+    // date "JJ-MM-AAAA" + heure "HH:MM", déjà en heure locale Portugal.
+
+    if (!dateStr || !timeStr) {
+        return "--.--.-- --:--";
+    }
+
+    const match = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+
+    if (!match) {
+        return "--.--.-- --:--";
+    }
+
+    return (
+        match[1] +
+        "." +
+        match[2] +
+        "." +
+        match[3].slice(-2) +
+        " " +
+        timeStr
+    );
+}
+
+
 function kmhToKnots(kmh) {
 
-    // -99 est la valeur "pas de mesure" utilisée par IPMA.
     const value = Number(kmh);
 
     if (!Number.isFinite(value) || value === -99) {
@@ -700,9 +730,6 @@ function kmhToKnots(kmh) {
 
 
 function displayRoundedValue(elementId, value) {
-
-    // Affiche un nombre arrondi, ou "--" si la valeur est
-    // absente/invalide (NaN, null, undefined).
 
     const element = document.getElementById(elementId);
 
@@ -728,24 +755,14 @@ function setError(elementId, message = "") {
 
 
 /* =========================================================
-   BLOC 3 : FLÈCHES DE DIRECTION (affichage / masquage)
+   BLOC 3 : FLÈCHES DE DIRECTION
    ---------------------------------------------------------
-   Logique de dessin des flèches SVG :
-   - positionnement selon un angle en degrés
-   - affichage / masquage quand la direction n'est pas fiable
-     (pas de mesure, valeur invalide, direction "variable")
-
-   Convention : les angles représentent la provenance
-   météorologique du vent (0° = Nord, 90° = Est, 180° = Sud,
-   270° = Ouest).
+   La flèche part du bord du cercle (côté d'où vient le vent) et
+   pointe vers le centre. Convention d'angle : 0° = Nord (haut),
+   sens horaire.
 ========================================================= */
 
 function setArrowVisibility(lineId, visible) {
-
-    // Masque complètement la flèche (et sa pointe, dessinée via
-    // <marker>) quand on n'a pas de direction fiable à afficher,
-    // plutôt que de laisser un cap par défaut ou une ancienne
-    // valeur périmée à l'écran.
 
     const arrow = document.getElementById(lineId);
 
@@ -758,10 +775,6 @@ function setArrowVisibility(lineId, visible) {
 
 
 function setDirectionDegrees(lineId, degrees) {
-
-    // Variante C : la flèche part du bord du cercle, du côté d'où vient
-    // le vent, et pointe VERS le centre (la pointe touche le centre).
-    // Lecture : "le vent vient de cette direction, et souffle vers ici".
 
     const arrow = document.getElementById(lineId);
     const direction = Number(degrees);
@@ -792,11 +805,6 @@ function setDirectionDegrees(lineId, degrees) {
 
 function getIPMADirectionDegrees(directionId) {
 
-    // Table de correspondance des codes IPMA -> degrés.
-    // Codes volontairement absents de la table (= flèche masquée) :
-    //   0   = "Sem dados" (pas de mesure)
-    //   9   = "Variável" (direction non définie, pas un cap fixe)
-    //  -99  = valeur invalide
     const directionDegrees = {
         1: 0,
         2: 45,
@@ -819,11 +827,6 @@ function getIPMADirectionDegrees(directionId) {
 ========================================================= */
 
 function findLatestIPMAObservation(data, stationId) {
-
-    // Le JSON IPMA est structuré { timestamp: { stationId: {...} } }.
-    // On cherche, du plus récent au plus ancien, le premier relevé
-    // non-null pour la station demandée (une station peut être en
-    // panne à certains horaires et remonter des données à d'autres).
 
     const timestamps =
         Object.keys(data).sort().reverse();
@@ -856,9 +859,6 @@ function updateIPMAStation(
     errorElementId
 ) {
 
-    // Masquée par défaut : si aucune direction valide n'est trouvée
-    // plus bas, la flèche reste masquée plutôt que d'afficher un cap
-    // par défaut ou la dernière valeur connue.
     setArrowVisibility(arrowElementId, false);
 
     if (!stationResult) {
@@ -876,7 +876,6 @@ function updateIPMAStation(
     const { timestamp, observation } =
         stationResult;
 
-    // --- Vitesse moyenne ---
     const windKnots =
         kmhToKnots(
             observation.intensidadeVentoKM
@@ -887,7 +886,6 @@ function updateIPMAStation(
         windKnots
     );
 
-    // --- Direction : affichée seulement si le code IPMA est exploitable ---
     const degrees =
         getIPMADirectionDegrees(
             observation.idDireccVento
@@ -964,16 +962,6 @@ async function loadIPMA() {
             "lavradioError"
         );
 
-        console.log(
-            "IPMA P.Rainha :",
-            pRainhaResult
-        );
-
-        console.log(
-            "IPMA Lavradio :",
-            lavradioResult
-        );
-
     }
     catch (error) {
 
@@ -982,15 +970,11 @@ async function loadIPMA() {
             error
         );
 
-        // Requête totalement échouée : on efface aussi les valeurs et
-        // les flèches pour ne pas laisser un relevé périmé à l'écran.
         displayRoundedValue("prainhaAvg", NaN);
         displayRoundedValue("lavradioAvg", NaN);
         setArrowVisibility("arrowPrainha", false);
         setArrowVisibility("arrowLavradio", false);
 
-        // Pas de message d'erreur textuel : l'absence de flèche et
-        // les valeurs "--" suffisent à signaler l'échec du chargement.
         setError("prainhaError");
         setError("lavradioError");
 
@@ -1030,11 +1014,6 @@ function getHidromodValue(seriesId, data) {
 
 function parseHidromodDate(dateValue) {
 
-    // Hidromod renvoie une date au format ASP.NET "/Date(epochMs)/".
-    // Vérifié le 24.08.2026 : pas d'offset dans la réponse réelle.
-    // Si l'API ajoute un jour un offset ("/Date(epochMs+0100)/"),
-    // cette regex ne matchera plus et renverra null -> à surveiller.
-
     if (!dateValue) {
         return null;
     }
@@ -1059,21 +1038,11 @@ function parseHidromodDate(dateValue) {
 
 function updateHidromodDisplay(average, gust, direction, calculationDate) {
 
-    // Regroupe la mise à jour de l'affichage Baliza 2, sur le même
-    // principe que updateIPMAStation : la flèche est masquée par
-    // défaut et n'est affichée que si une direction exploitable
-    // est disponible.
-
     setArrowVisibility("arrowBaliza", false);
 
     displayRoundedValue("balizaAvg", average);
     displayRoundedValue("balizaGust", gust);
 
-    // NB : seule l'absence de série (null) masque la flèche pour
-    // l'instant. Une valeur 0 est traitée comme un cap Nord valide.
-    // À revoir si un test par vent confirmé montre que l'API renvoie
-    // aussi 0 en cas d'absence de mesure (cf. revue de code : avg,
-    // gust et direction à 0 simultanément lors du 1er test).
     if (direction !== null) {
 
         setDirectionDegrees("arrowBaliza", direction);
@@ -1103,11 +1072,6 @@ async function loadHidromod() {
             "451,450,448,449,446,447/" +
             now +
             "/?format=json";
-
-        console.log(
-            "Requête Hidromod :",
-            url
-        );
 
         const response = await fetch(
             url,
@@ -1155,16 +1119,6 @@ async function loadHidromod() {
             calculationDate
         );
 
-        console.log(
-            "Hidromod Baliza 2 :",
-            {
-                average,
-                gust,
-                direction,
-                calculationDate
-            }
-        );
-
     }
     catch (error) {
 
@@ -1173,13 +1127,10 @@ async function loadHidromod() {
             error
         );
 
-        // Requête totalement échouée : mêmes précautions que pour IPMA.
         displayRoundedValue("balizaAvg", NaN);
         displayRoundedValue("balizaGust", NaN);
         setArrowVisibility("arrowBaliza", false);
 
-        // Pas de message d'erreur textuel : l'absence de flèche et
-        // les valeurs "--" suffisent à signaler l'échec du chargement.
         setError("balizaError");
 
     }
@@ -1188,92 +1139,202 @@ async function loadHidromod() {
 
 
 /* =========================================================
-   BLOC 5-BIS : DONNÉES AML (CÂMARA MUNICIPAL DE SETÚBAL)
+   BLOC 5-BIS : DONNÉES AML (30 STATIONS, SÉLECTION UTILISATEUR)
    ---------------------------------------------------------
-   Passe par un Worker Cloudflare (aml-proxy-standalone.js) qui charge
-   la page publique /dashboard de la station (un simple GET, pas de
-   session/CSRF nécessaire) et en extrait les valeurs par regex côté
-   serveur. Le Worker renvoie directement un JSON normalisé :
-     { station, date, time, averageSpeedKmh, gustSpeedKmh,
-       averageDirectionDeg, gustDirectionText, gustDirectionDeg }
-   (vitesses en km/h, converties en noeuds ci-dessous comme pour IPMA).
+   - AML_STATIONS : catalogue complet (id + nom officiel).
+   - selectedStationIds : sous-ensemble actuellement affiché,
+     persisté dans localStorage.
+   - Les cartes sont générées dynamiquement en HTML (buildAmlCardHtml)
+     et injectées dans #amlStationsContainer.
 ========================================================= */
 
-function formatAMLTimestamp(dateStr, timeStr) {
+function loadStationSelection() {
 
-    // date "JJ-MM-AAAA" + heure "HH:MM", déjà en heure locale Portugal.
+    try {
 
-    if (!dateStr || !timeStr) {
-        return "--.--.-- --:--";
+        const raw = localStorage.getItem(STATION_SELECTION_STORAGE_KEY);
+
+        if (!raw) {
+            return AML_STATIONS.map(station => station.id);
+        }
+
+        const parsed = JSON.parse(raw);
+
+        return Array.isArray(parsed)
+            ? parsed
+            : AML_STATIONS.map(station => station.id);
+
+    }
+    catch (error) {
+
+        console.error("Erreur lecture sélection stations :", error);
+        return AML_STATIONS.map(station => station.id);
+
     }
 
-    const match = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
-
-    if (!match) {
-        return "--.--.-- --:--";
-    }
-
-    return (
-        match[1] +
-        "." +
-        match[2] +
-        "." +
-        match[3].slice(-2) +
-        " " +
-        timeStr
-    );
 }
 
 
-function updateAMLDisplay(data) {
+function saveStationSelection(ids) {
 
-    setArrowVisibility("arrowSetubal", false);
+    try {
+        localStorage.setItem(
+            STATION_SELECTION_STORAGE_KEY,
+            JSON.stringify(ids)
+        );
+    }
+    catch (error) {
+        console.error("Erreur sauvegarde sélection stations :", error);
+    }
+
+}
+
+
+let selectedStationIds = loadStationSelection();
+
+
+function amlElementId(stationId, suffix) {
+    return "aml" + stationId + suffix;
+}
+
+
+function buildAmlCardHtml(station) {
+
+    const arrowId = amlElementId(station.id, "Arrow");
+    const markerId = amlElementId(station.id, "ArrowHead");
+    const avgId = amlElementId(station.id, "Avg");
+    const gustId = amlElementId(station.id, "Gust");
+    const updateId = amlElementId(station.id, "Update");
+    const errorId = amlElementId(station.id, "Error");
+
+    return `
+    <section class="spot" data-station-id="${station.id}">
+
+        <div class="spot-header">
+            <div class="spot-name">${station.name}</div>
+            <div id="${updateId}" class="update-time">--.--.-- --:--</div>
+        </div>
+
+        <svg class="compass" viewBox="-20 -20 240 240">
+
+            <defs>
+                <marker id="${markerId}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
+                    <path d="M0,0 L0,6 L7,3 z" class="wind-arrow-head"/>
+                </marker>
+            </defs>
+
+            <circle cx="100" cy="100" r="90" fill="#efe5d4" stroke="#2f5fd0" stroke-width="2"/>
+
+            <g class="compass-labels">
+                <text x="100" y="0" text-anchor="middle" dominant-baseline="central">N</text>
+                <text x="170.71" y="29.29" text-anchor="middle" dominant-baseline="central">NE</text>
+                <text x="200" y="100" text-anchor="middle" dominant-baseline="central">E</text>
+                <text x="170.71" y="170.71" text-anchor="middle" dominant-baseline="central">SE</text>
+                <text x="100" y="200" text-anchor="middle" dominant-baseline="central">S</text>
+                <text x="29.29" y="170.71" text-anchor="middle" dominant-baseline="central">SW</text>
+                <text x="0" y="100" text-anchor="middle" dominant-baseline="central">W</text>
+                <text x="29.29" y="29.29" text-anchor="middle" dominant-baseline="central">NW</text>
+            </g>
+
+            <line id="${arrowId}" x1="100" y1="20" x2="100" y2="100" class="arrow" marker-end="url(#${markerId})"/>
+
+            <text id="${avgId}" x="100" y="83" text-anchor="middle" class="avg">--</text>
+            <text id="${gustId}" x="100" y="128" text-anchor="middle" class="gust">--</text>
+
+        </svg>
+
+        <div id="${errorId}" class="error-message"></div>
+
+        <div class="source">Source: clima.aml.pt</div>
+
+    </section>`;
+
+}
+
+
+function renderAmlCards() {
+
+    const container = document.getElementById("amlStationsContainer");
+
+    const visibleStations =
+        AML_STATIONS.filter(station => selectedStationIds.includes(station.id));
+
+    container.innerHTML =
+        visibleStations.map(buildAmlCardHtml).join("");
+
+}
+
+
+function renderStationCheckboxes() {
+
+    const list = document.getElementById("stationCheckboxList");
+
+    list.innerHTML = AML_STATIONS.map(station => `
+        <label class="station-checkbox-item">
+            <input type="checkbox" value="${station.id}" ${selectedStationIds.includes(station.id) ? "checked" : ""}>
+            ${station.name}
+        </label>
+    `).join("");
+
+}
+
+
+function updateAmlStationDisplay(stationId, data) {
+
+    const arrowId = amlElementId(stationId, "Arrow");
+    const avgId = amlElementId(stationId, "Avg");
+    const gustId = amlElementId(stationId, "Gust");
+    const updateId = amlElementId(stationId, "Update");
+    const errorId = amlElementId(stationId, "Error");
+
+    setArrowVisibility(arrowId, false);
 
     if (!data) {
 
-        displayRoundedValue("setubalAvg", NaN);
-        displayRoundedValue("setubalGust", NaN);
+        displayRoundedValue(avgId, NaN);
+        displayRoundedValue(gustId, NaN);
 
-        setError(
-            "setubalError",
-            "No observation available"
-        );
+        setError(errorId, "No observation available");
 
         return;
     }
 
-    // Unité confirmée : km/h -> conversion en noeuds, comme pour IPMA,
-    // pour rester cohérent avec le reste du dashboard.
     const average = kmhToKnots(data.averageSpeedKmh);
     const gust = kmhToKnots(data.gustSpeedKmh);
 
-    displayRoundedValue("setubalAvg", average);
-    displayRoundedValue("setubalGust", gust);
+    displayRoundedValue(avgId, average);
+    displayRoundedValue(gustId, gust);
 
     if (Number.isFinite(data.averageDirectionDeg)) {
 
-        setDirectionDegrees("arrowSetubal", data.averageDirectionDeg);
-        setArrowVisibility("arrowSetubal", true);
+        setDirectionDegrees(arrowId, data.averageDirectionDeg);
+        setArrowVisibility(arrowId, true);
 
     }
 
-    document.getElementById("setubalUpdate").textContent =
-        formatAMLTimestamp(data.date, data.time);
+    const updateElement = document.getElementById(updateId);
 
-    setError("setubalError");
+    if (updateElement) {
+        updateElement.textContent = formatAMLTimestamp(data.date, data.time);
+    }
+
+    setError(errorId);
 
 }
 
 
-async function loadAML() {
+async function loadAmlStation(stationId) {
 
-    setError("setubalError");
+    const errorId = amlElementId(stationId, "Error");
+
+    setError(errorId);
 
     try {
 
-        const response = await fetch(AML_URL, {
-            cache: "no-store"
-        });
+        const response = await fetch(
+            AML_URL_BASE + "?station=" + stationId,
+            { cache: "no-store" }
+        );
 
         if (!response.ok) {
             throw new Error("HTTP AML " + response.status);
@@ -1285,33 +1346,109 @@ async function loadAML() {
             throw new Error(data.error);
         }
 
-        updateAMLDisplay(data);
-
-        console.log("AML Setúbal :", data);
+        updateAmlStationDisplay(stationId, data);
 
     }
     catch (error) {
 
-        console.error("Erreur AML :", error);
+        console.error("Erreur AML station " + stationId + " :", error);
 
-        displayRoundedValue("setubalAvg", NaN);
-        displayRoundedValue("setubalGust", NaN);
-        setArrowVisibility("arrowSetubal", false);
+        const avgId = amlElementId(stationId, "Avg");
+        const gustId = amlElementId(stationId, "Gust");
+        const arrowId = amlElementId(stationId, "Arrow");
 
-        setError("setubalError");
+        displayRoundedValue(avgId, NaN);
+        displayRoundedValue(gustId, NaN);
+        setArrowVisibility(arrowId, false);
+
+        setError(errorId);
 
     }
 
 }
 
 
+async function loadAllAmlStations() {
+
+    await Promise.allSettled(
+        selectedStationIds.map(stationId => loadAmlStation(stationId))
+    );
+
+}
+
+
+/* --- Panneau de configuration des stations --- */
+
+function initStationSettingsPanel() {
+
+    const settingsBtn = document.getElementById("stationSettingsBtn");
+    const panel = document.getElementById("stationSettingsPanel");
+    const checkboxList = document.getElementById("stationCheckboxList");
+    const selectAllBtn = document.getElementById("selectAllBtn");
+    const selectNoneBtn = document.getElementById("selectNoneBtn");
+    const closeBtn = document.getElementById("closeSettingsBtn");
+
+    settingsBtn.addEventListener("click", () => {
+        panel.hidden = !panel.hidden;
+    });
+
+    closeBtn.addEventListener("click", () => {
+        panel.hidden = true;
+    });
+
+    checkboxList.addEventListener("change", (event) => {
+
+        const target = event.target;
+
+        if (!(target instanceof HTMLInputElement) || target.type !== "checkbox") {
+            return;
+        }
+
+        const stationId = target.value;
+
+        if (target.checked) {
+
+            if (!selectedStationIds.includes(stationId)) {
+                selectedStationIds = [...selectedStationIds, stationId];
+            }
+
+        }
+        else {
+
+            selectedStationIds = selectedStationIds.filter(id => id !== stationId);
+
+        }
+
+        saveStationSelection(selectedStationIds);
+        renderAmlCards();
+        loadAllAmlStations();
+
+    });
+
+    selectAllBtn.addEventListener("click", () => {
+
+        selectedStationIds = AML_STATIONS.map(station => station.id);
+        saveStationSelection(selectedStationIds);
+        renderStationCheckboxes();
+        renderAmlCards();
+        loadAllAmlStations();
+
+    });
+
+    selectNoneBtn.addEventListener("click", () => {
+
+        selectedStationIds = [];
+        saveStationSelection(selectedStationIds);
+        renderStationCheckboxes();
+        renderAmlCards();
+
+    });
+
+}
+
+
 /* =========================================================
    BLOC 6 : CHARGEMENT ET ACTUALISATION
-   ---------------------------------------------------------
-   Point d'entrée de la page : lance les deux sources en
-   parallèle au chargement, puis toutes les 10 minutes.
-   Promise.allSettled garantit qu'un échec sur une source
-   n'empêche pas l'autre de se mettre à jour.
 ========================================================= */
 
 async function refreshDashboard() {
@@ -1319,14 +1456,17 @@ async function refreshDashboard() {
     await Promise.allSettled([
         loadIPMA(),
         loadHidromod(),
-        loadAML()
+        loadAllAmlStations()
     ]);
 
 }
 
 
-refreshDashboard();
+renderStationCheckboxes();
+renderAmlCards();
+initStationSettingsPanel();
 
+refreshDashboard();
 
 setInterval(
     refreshDashboard,
