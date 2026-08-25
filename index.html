@@ -303,7 +303,7 @@ const ALL_SPOTS = [
         source: "ipma",
         sourceLabel: "ipma.pt",
         ipmaStationId: "1210766",
-        coastlinePath: "M 100.0 400.0 L 100.0 -200.0 L 500.0 -200.0 L 500.0 400.0 Z"
+        coastlinePath: "M 377.2 214.8 L -177.2 -14.8 L -24.1 -384.4 L 530.2 -154.7 Z"
     },
     {
         key: "aml-37",
@@ -316,23 +316,23 @@ const ALL_SPOTS = [
 
     // --- Reste du catalogue AML (25.08.2026, clima.aml.pt/page/publico) ---
     // Pas de coastlinePath : cercle uni tant qu'on n'a pas défini leur ligne de côte.
-    { key: "aml-27", name: "ALMADA", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "27" },
-    { key: "aml-28", name: "CASCAIS (Estoril)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "28" },
-    { key: "aml-29", name: "ALCOCHETE", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "29" },
-    { key: "aml-30", name: "OEIRAS", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "30" },
+    { key: "aml-27", name: "ALMADA", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "27", lat: 38.65678424272186, lng: -9.159867708293369, coastlinePath: "M 329.8 292.8 L -129.8 -92.8 L 127.3 -399.3 L 586.9 -13.6 Z" },
+    { key: "aml-28", name: "CASCAIS (Estoril)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "28", lat: 38.693618710145515, lng: -9.372343149067419, coastlinePath: "M -177.2 -14.8 L 377.2 214.8 L 224.1 584.4 L -330.2 354.7 Z" },
+    { key: "aml-29", name: "ALCOCHETE", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "29", lat: 38.74965275490094, lng: -8.9539071435362, coastlinePath: "M 312.1 -112.1 L -112.1 312.1 L -395.0 29.3 L 29.3 -395.0 Z" },
+    { key: "aml-30", name: "OEIRAS", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "30", lat: 38.69183434767245, lng: -9.303986138716219, coastlinePath: "M -151.6 263.4 L 351.6 -63.4 L 569.5 272.1 L 66.3 598.9 Z" },
     { key: "aml-31", name: "SINTRA (Algueirão-Mem Martins)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "31" },
     { key: "aml-32", name: "LISBOA (Carnide)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "32" },
     { key: "aml-33", name: "AMADORA", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "33" },
     { key: "aml-34", name: "ODIVELAS", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "34" },
     { key: "aml-35", name: "MAFRA (Cheleiros)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "35" },
     { key: "aml-36", name: "LOURES", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "36" },
-    { key: "aml-38", name: "BARREIRO", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "38" },
+    { key: "aml-38", name: "BARREIRO", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "38", coastlinePath: "M 377.2 -14.8 L -177.2 214.8 L -330.2 -154.7 L 224.1 -384.4 Z" },
     { key: "aml-39", name: "SEIXAL (Santa Marta do Pinhal)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "39" },
     { key: "aml-40", name: "MOITA (Alhos Vedros)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "40" },
     { key: "aml-41", name: "SESIMBRA (Quinta do Conde)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "41" },
     { key: "aml-42", name: "PALMELA (Pinhal Novo)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "42" },
-    { key: "aml-43", name: "MONTIJO", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "43" },
-    { key: "aml-44", name: "VILA FRANCA DE XIRA", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "44" },
+    { key: "aml-43", name: "MONTIJO", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "43", coastlinePath: "M -177.2 -14.8 L 377.2 214.8 L 224.1 584.4 L -330.2 354.7 Z" },
+    { key: "aml-44", name: "VILA FRANCA DE XIRA", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "44", coastlinePath: "M -63.4 351.6 L 263.4 -151.6 L 598.9 66.3 L 272.1 569.5 Z" },
     { key: "aml-45", name: "MAFRA (Encarnação)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "45" },
     { key: "aml-47", name: "MAFRA (Malveira)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "47" },
     { key: "aml-48", name: "MAFRA (Vila - Paços do Concelho)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "48" },
@@ -342,7 +342,7 @@ const ALL_SPOTS = [
     { key: "aml-53", name: "PALMELA (Castelo)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "53" },
     { key: "aml-54", name: "SINTRA (Quinta da Regaleira)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "54" },
     { key: "aml-55", name: "PALMELA (Lau)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "55" },
-    { key: "aml-56", name: "SEIXAL (Serviços Centrais CMS)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "56" },
+    { key: "aml-56", name: "SEIXAL (Serviços Centrais CMS)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "56", coastlinePath: "M 398.9 126.1 L -198.9 73.9 L -164.0 -324.6 L 433.7 -272.3 Z" },
     { key: "aml-57", name: "SEIXAL (Fernão Ferro)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "57" },
     { key: "aml-58", name: "SEIXAL (Verdizela)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "58" }
 
