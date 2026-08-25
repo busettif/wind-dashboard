@@ -316,6 +316,12 @@ const HIDROMOD_SERIES = {
 const AML_URL_BASE =
     "https://aml-proxy.live-wind.workers.dev/api/aml-station";
 
+// Windy.app : appel direct, pas de proxy nécessaire (CORS ouvert, testé le
+// 25.08.2026 — l'API est visiblement prévue pour être appelée depuis
+// n'importe quel site tiers, comme leur propre widget embarquable).
+const WINDY_URL_BASE =
+    "https://api.windyapp.co/v10/meteostations/getData/";
+
 const ALL_SPOTS = [
 
     // --- Les 4 spots définis manuellement : NE PAS MODIFIER coastlinePath ---
@@ -381,7 +387,24 @@ const ALL_SPOTS = [
     { key: "aml-55", name: "PALMELA (Lau)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "55" },
     { key: "aml-56", name: "SEIXAL (Serviços Centrais CMS)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "56", coastlinePath: "M 398.9 126.1 L -198.9 73.9 L -164.0 -324.6 L 433.7 -272.3 Z" },
     { key: "aml-57", name: "SEIXAL (Fernão Ferro)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "57" },
-    { key: "aml-58", name: "SEIXAL (Verdizela)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "58" }
+    { key: "aml-58", name: "SEIXAL (Verdizela)", source: "aml", sourceLabel: "clima.aml.pt", amlStationId: "58" },
+
+    // --- Stations Windy.app (25.08.2026, noms officiels d'origine) ---
+    { key: "windy-lpar", name: "Portugal - Lisbon - Alverca do Ribatejo (MADIS_LPAR)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_LPAR" },
+    { key: "windy-lppt", name: "LISBON/PORTELA (LPPT)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_LPPT" },
+    { key: "windy-f3135", name: "FW3135 Lisboa PT (F3135)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_F3135" },
+    { key: "windy-d7126", name: "DW7126 Lourinha PT (D7126)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_D7126" },
+    { key: "windy-f9382", name: "FW9382 Sao Martinho Do Porto PT (F9382)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_F9382" },
+    { key: "windy-lpmr", name: "Portugal - Leiria District - Monte Real (MADIS_LPMR)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_LPMR" },
+    { key: "windy-d5475", name: "Portugal - Aveiro - Fermentelos (D5475)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_D5475" },
+    { key: "windy-lpov", name: "Portugal - Aveiro - Arada (MADIS_LPOV)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_LPOV" },
+    { key: "windy-lppr", name: "PORTO/PEDRAS_RUBRAS (LPPR)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_LPPR" },
+    { key: "windy-pioupiou-1674", name: "Windbird 1674", source: "windy", sourceLabel: "windy.app", windyStationId: "PIOUPIOU_1674" },
+    { key: "windy-e3803", name: "EW3803 Sines PT (E3803)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_E3803" },
+    { key: "windy-lpfr", name: "FARO (LPFR)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_LPFR" },
+    { key: "windy-g1675", name: "GW1675 TAVIRA PT (G1675)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_G1675" },
+    { key: "windy-iatalaia2", name: "Iatalaia2, Atalaia, PT - PWS", source: "windy", sourceLabel: "windy.app", windyStationId: "PWS_IATALAIA2" },
+    { key: "windy-lpmt", name: "Portugal - Setubal - Montijo (MADIS_LPMT)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_LPMT" }
 
 ];
 
@@ -510,6 +533,18 @@ function kmhToKnots(kmh) {
     }
 
     return value / 1.852;
+}
+
+
+function msToKnots(ms) {
+
+    const value = Number(ms);
+
+    if (!Number.isFinite(value)) {
+        return null;
+    }
+
+    return value * 1.943844;
 }
 
 
@@ -955,6 +990,77 @@ async function loadAllAmlSpots() {
 
 
 /* =========================================================
+   BLOC 7-BIS : DONNÉES WINDY.APP
+   ---------------------------------------------------------
+   Appel direct (pas de proxy) : response.data[] est trié du plus
+   ancien au plus récent, on prend le dernier élément. Vitesses en
+   m/s (converties en noeuds), timestamp en secondes UNIX.
+========================================================= */
+
+async function loadWindySpot(spot) {
+
+    try {
+
+        const url =
+            WINDY_URL_BASE +
+            spot.windyStationId +
+            "?predict=1&predictTemperature=1&canWindNull=1&info=1";
+
+        const response = await fetch(url, { cache: "no-store" });
+
+        if (!response.ok) {
+            throw new Error("HTTP Windy " + response.status);
+        }
+
+        const json = await response.json();
+        const dataPoints = json?.response?.data;
+
+        if (!Array.isArray(dataPoints) || dataPoints.length === 0) {
+            setSpotUnavailable(spot.key, "No observation available");
+            return;
+        }
+
+        const latest = dataPoints[dataPoints.length - 1];
+
+        const average = msToKnots(latest.wind_avg);
+        const gust = msToKnots(latest.wind_max);
+        const directionDeg = Number(latest.wind_direction);
+
+        const measuredAt =
+            Number.isFinite(latest.timestamp)
+                ? new Date(latest.timestamp * 1000)
+                : null;
+
+        updateSpotDisplay(spot.key, {
+            average,
+            gust,
+            directionDeg,
+            timeText: formatDateObject(measuredAt),
+            measuredAt
+        });
+
+    }
+    catch (error) {
+
+        console.error("Erreur Windy " + spot.key + " :", error);
+
+        setSpotUnavailable(spot.key, "");
+
+    }
+
+}
+
+
+async function loadAllWindySpots() {
+
+    const windySpots = ALL_SPOTS.filter(spot => spot.source === "windy");
+
+    await Promise.allSettled(windySpots.map(loadWindySpot));
+
+}
+
+
+/* =========================================================
    BLOC 8 : SÉLECTION DES CARTES (persistée, triée alphabétiquement)
 ========================================================= */
 
@@ -1209,7 +1315,8 @@ async function refreshDashboard() {
     await Promise.allSettled([
         loadIPMA(),
         loadHidromod(),
-        loadAllAmlSpots()
+        loadAllAmlSpots(),
+        loadAllWindySpots()
     ]);
 
 }
