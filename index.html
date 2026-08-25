@@ -136,6 +136,11 @@ h1 {
     text-align: right;
 }
 
+.update-time.stale {
+    color: #a00000;
+    font-weight: bold;
+}
+
 .compass {
     display: block;
     width: 200px;
@@ -159,7 +164,8 @@ h1 {
 }
 
 .gust {
-    font-size: 17px;
+    font-size: 20px;
+    font-weight: bold;
     fill: #666;
     paint-order: stroke;
     stroke: white;
@@ -437,6 +443,27 @@ function formatAMLTimestamp(dateStr, timeStr) {
 }
 
 
+function parseAMLDateTime(dateStr, timeStr) {
+
+    if (!dateStr || !timeStr) {
+        return null;
+    }
+
+    const dateMatch = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+    const timeMatch = timeStr.match(/^(\d{2}):(\d{2})$/);
+
+    if (!dateMatch || !timeMatch) {
+        return null;
+    }
+
+    const [, day, month, year] = dateMatch;
+    const [, hours, minutes] = timeMatch;
+
+    return new Date(Number(year), Number(month) - 1, Number(day), Number(hours), Number(minutes));
+
+}
+
+
 function kmhToKnots(kmh) {
 
     const value = Number(kmh);
@@ -559,7 +586,7 @@ function getIPMADirectionDegrees(directionId) {
 
 function updateSpotDisplay(spotKey, options) {
 
-    const { average = NaN, gust = NaN, directionDeg = null, timeText = "--.--.-- --:--" } =
+    const { average = NaN, gust = NaN, directionDeg = null, timeText = "--.--.-- --:--", measuredAt = null } =
         options || {};
 
     const arrowId = elementId(spotKey, "arrow");
@@ -582,6 +609,14 @@ function updateSpotDisplay(spotKey, options) {
 
     if (updateElement) {
         updateElement.textContent = timeText;
+
+        // Rouge si la mesure a plus de 24h.
+        const ageMs =
+            measuredAt instanceof Date && !Number.isNaN(measuredAt.getTime())
+                ? Date.now() - measuredAt.getTime()
+                : null;
+
+        updateElement.classList.toggle("stale", ageMs !== null && ageMs > 24 * 60 * 60 * 1000);
     }
 
     setError(errorId);
@@ -651,7 +686,8 @@ function updateIPMASpot(spot, data) {
         average,
         gust: NaN,
         directionDeg,
-        timeText: formatIPMATimestamp(timestamp)
+        timeText: formatIPMATimestamp(timestamp),
+        measuredAt: timestamp ? new Date(timestamp) : null
     });
 
 }
@@ -789,7 +825,8 @@ async function loadHidromod() {
             average,
             gust,
             directionDeg: direction,
-            timeText: formatDateObject(calculationDate)
+            timeText: formatDateObject(calculationDate),
+            measuredAt: calculationDate
         });
 
     }
@@ -834,7 +871,8 @@ async function loadAmlSpot(spot) {
             average,
             gust,
             directionDeg: data.averageDirectionDeg,
-            timeText: formatAMLTimestamp(data.date, data.time)
+            timeText: formatAMLTimestamp(data.date, data.time),
+            measuredAt: parseAMLDateTime(data.date, data.time)
         });
 
     }
