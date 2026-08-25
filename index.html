@@ -1186,61 +1186,46 @@ async function loadHidromod() {
 /* =========================================================
    BLOC 5-BIS : DONNÉES AML (CÂMARA MUNICIPAL DE SETÚBAL)
    ---------------------------------------------------------
-   Passe par un Worker Cloudflare (aml-proxy-standalone.js) qui gère
-   côté serveur la session + le jeton CSRF exigés par clima.aml.pt,
-   et renvoie tel quel le JSON DataTables de la station.
-
-   Colonnes utiles de aaData[i] (déterminées empiriquement le 24.08.2026) :
-     0  = horodatage "AAAA-MM-JJ HH:MM:SS" (heure locale Portugal)
-     8  = vitesse moyenne du vent (km/h)
-     9  = rafale (km/h)
-     11 = direction du vent (degrés)
+   Passe par un Worker Cloudflare (aml-proxy-standalone.js) qui charge
+   la page publique /dashboard de la station (un simple GET, pas de
+   session/CSRF nécessaire) et en extrait les valeurs par regex côté
+   serveur. Le Worker renvoie directement un JSON normalisé :
+     { station, date, time, averageSpeedKmh, gustSpeedKmh,
+       averageDirectionDeg, gustDirectionText, gustDirectionDeg }
+   (vitesses en km/h, converties en noeuds ci-dessous comme pour IPMA).
 ========================================================= */
 
-const AML_COLUMNS = {
-    timestamp: 0,
-    average: 8,
-    gust: 9,
-    direction: 11
-};
+function formatAMLTimestamp(dateStr, timeStr) {
 
+    // date "JJ-MM-AAAA" + heure "HH:MM", déjà en heure locale Portugal.
 
-function formatAMLTimestamp(raw) {
-
-    // Le timestamp AML est déjà en heure locale Portugal (confirmé),
-    // donc même logique que formatIPMATimestamp : pas de conversion Date.
-
-    if (!raw || typeof raw !== "string") {
+    if (!dateStr || !timeStr) {
         return "--.--.-- --:--";
     }
 
-    const match = raw.match(
-        /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})/
-    );
+    const match = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
 
     if (!match) {
         return "--.--.-- --:--";
     }
 
     return (
-        match[3] +
+        match[1] +
         "." +
         match[2] +
         "." +
-        match[1].slice(-2) +
+        match[3].slice(-2) +
         " " +
-        match[4] +
-        ":" +
-        match[5]
+        timeStr
     );
 }
 
 
-function updateAMLDisplay(row) {
+function updateAMLDisplay(data) {
 
     setArrowVisibility("arrowSetubal", false);
 
-    if (!row) {
+    if (!data) {
 
         displayRoundedValue("setubalAvg", NaN);
         displayRoundedValue("setubalGust", NaN);
@@ -1255,22 +1240,21 @@ function updateAMLDisplay(row) {
 
     // Unité confirmée : km/h -> conversion en noeuds, comme pour IPMA,
     // pour rester cohérent avec le reste du dashboard.
-    const average = kmhToKnots(row[AML_COLUMNS.average]);
-    const gust = kmhToKnots(row[AML_COLUMNS.gust]);
-    const directionDeg = Number(row[AML_COLUMNS.direction]);
+    const average = kmhToKnots(data.averageSpeedKmh);
+    const gust = kmhToKnots(data.gustSpeedKmh);
 
     displayRoundedValue("setubalAvg", average);
     displayRoundedValue("setubalGust", gust);
 
-    if (Number.isFinite(directionDeg)) {
+    if (Number.isFinite(data.averageDirectionDeg)) {
 
-        setDirectionDegrees("arrowSetubal", directionDeg);
+        setDirectionDegrees("arrowSetubal", data.averageDirectionDeg);
         setArrowVisibility("arrowSetubal", true);
 
     }
 
     document.getElementById("setubalUpdate").textContent =
-        formatAMLTimestamp(row[AML_COLUMNS.timestamp]);
+        formatAMLTimestamp(data.date, data.time);
 
     setError("setubalError");
 
@@ -1297,14 +1281,9 @@ async function loadAML() {
             throw new Error(data.error);
         }
 
-        const rows = Array.isArray(data?.aaData) ? data.aaData : [];
+        updateAMLDisplay(data);
 
-        // Les lignes sont déjà triées de la plus récente à la plus ancienne.
-        const latestRow = rows.length > 0 ? rows[0] : null;
-
-        updateAMLDisplay(latestRow);
-
-        console.log("AML Setúbal :", latestRow);
+        console.log("AML Setúbal :", data);
 
     }
     catch (error) {
