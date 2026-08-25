@@ -222,9 +222,9 @@ h1 {
             <line
                 id="arrowBaliza"
                 x1="100"
-                y1="100"
+                y1="20"
                 x2="100"
-                y2="40"
+                y2="100"
                 class="arrow"
                 marker-end="url(#arrowHeadBaliza)"/>
 
@@ -337,9 +337,9 @@ h1 {
             <line
                 id="arrowPrainha"
                 x1="100"
-                y1="100"
+                y1="20"
                 x2="100"
-                y2="40"
+                y2="100"
                 class="arrow"
                 marker-end="url(#arrowHeadPrainha)"/>
 
@@ -443,9 +443,9 @@ h1 {
             <line
                 id="arrowLavradio"
                 x1="100"
-                y1="100"
+                y1="20"
                 x2="100"
-                y2="40"
+                y2="100"
                 class="arrow"
                 marker-end="url(#arrowHeadLavradio)"/>
 
@@ -549,9 +549,9 @@ h1 {
             <line
                 id="arrowSetubal"
                 x1="100"
-                y1="100"
+                y1="20"
                 x2="100"
-                y2="40"
+                y2="100"
                 class="arrow"
                 marker-end="url(#arrowHeadSetubal)"/>
 
@@ -759,6 +759,10 @@ function setArrowVisibility(lineId, visible) {
 
 function setDirectionDegrees(lineId, degrees) {
 
+    // Variante C : la flèche part du bord du cercle, du côté d'où vient
+    // le vent, et pointe VERS le centre (la pointe touche le centre).
+    // Lecture : "le vent vient de cette direction, et souffle vers ici".
+
     const arrow = document.getElementById(lineId);
     const direction = Number(degrees);
 
@@ -768,21 +772,21 @@ function setDirectionDegrees(lineId, degrees) {
 
     const centerX = 100;
     const centerY = 100;
-    const length = 80; // longueur de la flèche (ajustée manuellement)
+    const length = 80; // distance du bord (départ de la flèche) au centre
 
     const radians =
         (direction - 90) * Math.PI / 180;
 
-    const endX =
+    const startX =
         centerX + length * Math.cos(radians);
 
-    const endY =
+    const startY =
         centerY + length * Math.sin(radians);
 
-    arrow.setAttribute("x1", centerX);
-    arrow.setAttribute("y1", centerY);
-    arrow.setAttribute("x2", endX.toFixed(2));
-    arrow.setAttribute("y2", endY.toFixed(2));
+    arrow.setAttribute("x1", startX.toFixed(2));
+    arrow.setAttribute("y1", startY.toFixed(2));
+    arrow.setAttribute("x2", centerX);
+    arrow.setAttribute("y2", centerY);
 }
 
 
@@ -863,7 +867,7 @@ function updateIPMAStation(
 
         setError(
             errorElementId,
-            "Aucune observation disponible"
+            "No observation available"
         );
 
         return;
@@ -1232,7 +1236,7 @@ function updateAMLDisplay(data) {
 
         setError(
             "setubalError",
-            "Aucune observation disponible"
+            "No observation available"
         );
 
         return;
