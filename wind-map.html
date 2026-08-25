@@ -99,6 +99,10 @@ h1 {
     margin-top: 1px;
 }
 
+.map-marker-time.fresh {
+    background: #baf2ba;
+}
+
 /* --- Contenu du popup : on réutilise le design "carte compass" du dashboard --- */
 
 .leaflet-popup-content {
@@ -335,6 +339,17 @@ function formatAMLTimestamp(dateStr, timeStr) {
     return match[1] + "." + match[2] + "." + match[3].slice(-2) + " " + timeStr;
 }
 
+function parseAMLDateTime(dateStr, timeStr) {
+    // date "JJ-MM-AAAA" + heure "HH:MM" -> objet Date en heure locale.
+    if (!dateStr || !timeStr) return null;
+    const dateMatch = dateStr.match(/^(\d{2})-(\d{2})-(\d{4})$/);
+    const timeMatch = timeStr.match(/^(\d{2}):(\d{2})$/);
+    if (!dateMatch || !timeMatch) return null;
+    const [, day, month, year] = dateMatch;
+    const [, hours, minutes] = timeMatch;
+    return new Date(Number(year), Number(month) - 1, Number(day), Number(hours), Number(minutes));
+}
+
 function kmhToKnots(kmh) {
     const value = Number(kmh);
     if (!Number.isFinite(value) || value === -99) return null;
@@ -482,6 +497,14 @@ function applySpotResult(spot, options) {
 
     if (timeEl) {
         timeEl.textContent = options.timeText || "--.--.-- --:--";
+
+        // Vert clair si la mesure a moins de 60 minutes ; sinon, style par défaut.
+        const isFresh =
+            options.measuredAt instanceof Date &&
+            !Number.isNaN(options.measuredAt.getTime()) &&
+            (Date.now() - options.measuredAt.getTime()) < 60 * 60 * 1000;
+
+        timeEl.classList.toggle("fresh", isFresh);
     }
 
     // Si un popup est actuellement ouvert pour ce spot, on le rafraîchit aussi
@@ -509,6 +532,7 @@ function applySpotUnavailable(spot, message) {
 
     if (timeEl) {
         timeEl.textContent = "--.--.-- --:--";
+        timeEl.classList.remove("fresh");
     }
 
     setSpotUnavailable(spot.key, message);
@@ -547,7 +571,8 @@ function updateIPMASpot(spot, data) {
         average,
         gust: NaN,
         directionDeg,
-        timeText: formatIPMATimestamp(timestamp)
+        timeText: formatIPMATimestamp(timestamp),
+        measuredAt: timestamp ? new Date(timestamp) : null
     });
 }
 
@@ -610,7 +635,8 @@ async function loadHidromod() {
             average,
             gust,
             directionDeg: direction,
-            timeText: formatDateObject(calculationDate)
+            timeText: formatDateObject(calculationDate),
+            measuredAt: calculationDate
         });
     }
     catch (error) {
@@ -639,7 +665,8 @@ async function loadAmlSpot(spot) {
             average,
             gust,
             directionDeg: data.averageDirectionDeg,
-            timeText: formatAMLTimestamp(data.date, data.time)
+            timeText: formatAMLTimestamp(data.date, data.time),
+            measuredAt: parseAMLDateTime(data.date, data.time)
         });
     }
     catch (error) {
