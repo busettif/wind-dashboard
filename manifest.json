@@ -1,0 +1,25 @@
+{
+    "name": "Wind Dashboard",
+    "short_name": "Wind",
+    "description": "Suivi du vent (vitesse, rafale, direction) pour les spots IPMA, Hidromod et AML.",
+    "start_url": "/index.html",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#eef2f5",
+    "theme_color": "#2f5fd0",
+    "icons": [
+        {
+            "src": "icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}
