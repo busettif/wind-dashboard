@@ -110,6 +110,9 @@ h1 {
     width: 100%;
     max-width: 520px;
     margin: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
 }
 
 .dashboard-wrapper {
@@ -119,8 +122,7 @@ h1 {
 .spot {
     background: white;
     border-radius: 15px;
-    padding: 8px 10px;
-    margin-bottom: 10px;
+    padding: 8px 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
 }
 
@@ -150,8 +152,8 @@ h1 {
 
 .compass {
     display: block;
-    width: 200px;
-    height: 200px;
+    width: clamp(120px, 42vw, 200px);
+    height: clamp(120px, 42vw, 200px);
     margin: auto;
 }
 
@@ -208,13 +210,13 @@ h1 {
 
     .dashboard {
         max-width: 1360px;
-        display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 12px;
     }
 
-    .spot {
-        margin-bottom: 0;
+    .compass {
+        width: 200px;
+        height: 200px;
     }
 
 }
