@@ -106,6 +106,17 @@ h1 {
     padding: 2px 0;
 }
 
+.station-selection-info {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.station-selection-info.limit-reached {
+    color: #a00000;
+    font-weight: bold;
+}
+
 .dashboard {
     width: 100%;
     max-width: 520px;
@@ -238,11 +249,13 @@ h1 {
     <div class="station-settings-header">
         <strong>Stations (alphabetical order)</strong>
         <div>
-            <button id="selectAllBtn" type="button">Select all</button>
+            <button id="selectAllBtn" type="button">Select first 10</button>
             <button id="selectNoneBtn" type="button">Select none</button>
             <button id="closeSettingsBtn" type="button">Close</button>
         </div>
     </div>
+
+    <div id="stationSelectionInfo" class="station-selection-info"></div>
 
     <div id="stationCheckboxList" class="station-checkbox-list"></div>
 
@@ -373,6 +386,12 @@ const ALL_SPOTS = [
 ];
 
 const SPOT_SELECTION_STORAGE_KEY = "windDashboard.selectedSpots";
+
+// Par défaut (première visite, rien en localStorage) : les 5 premières
+// stations par ordre alphabétique. Sélection limitée à 10 au total pour
+// éviter de surcharger le proxy AML (voir aml-proxy-standalone.js).
+const DEFAULT_SELECTION_COUNT = 5;
+const MAX_SELECTED_SPOTS = 10;
 
 
 function getSortedSpots() {
@@ -946,20 +965,20 @@ function loadSpotSelection() {
         const raw = localStorage.getItem(SPOT_SELECTION_STORAGE_KEY);
 
         if (!raw) {
-            return ALL_SPOTS.map(spot => spot.key);
+            return getSortedSpots().slice(0, DEFAULT_SELECTION_COUNT).map(spot => spot.key);
         }
 
         const parsed = JSON.parse(raw);
 
         return Array.isArray(parsed)
             ? parsed
-            : ALL_SPOTS.map(spot => spot.key);
+            : getSortedSpots().slice(0, DEFAULT_SELECTION_COUNT).map(spot => spot.key);
 
     }
     catch (error) {
 
         console.error("Erreur lecture sélection :", error);
-        return ALL_SPOTS.map(spot => spot.key);
+        return getSortedSpots().slice(0, DEFAULT_SELECTION_COUNT).map(spot => spot.key);
 
     }
 
@@ -1081,6 +1100,24 @@ function renderStationCheckboxes() {
         </label>
     `).join("");
 
+    updateSelectionInfo();
+
+}
+
+
+function updateSelectionInfo() {
+
+    const infoEl = document.getElementById("stationSelectionInfo");
+
+    if (!infoEl) {
+        return;
+    }
+
+    const count = selectedSpotKeys.length;
+
+    infoEl.textContent = `Selection: ${count} / ${MAX_SELECTED_SPOTS} stations max`;
+    infoEl.classList.toggle("limit-reached", count >= MAX_SELECTED_SPOTS);
+
 }
 
 
@@ -1113,6 +1150,16 @@ function initStationSettingsPanel() {
 
         if (target.checked) {
 
+            if (selectedSpotKeys.length >= MAX_SELECTED_SPOTS) {
+
+                // Limite atteinte : on annule la case et on prévient.
+                target.checked = false;
+                updateSelectionInfo();
+                window.alert(`Maximum ${MAX_SELECTED_SPOTS} stations. Uncheck one first.`);
+                return;
+
+            }
+
             if (!selectedSpotKeys.includes(spotKey)) {
                 selectedSpotKeys = [...selectedSpotKeys, spotKey];
             }
@@ -1125,6 +1172,7 @@ function initStationSettingsPanel() {
         }
 
         saveSpotSelection(selectedSpotKeys);
+        updateSelectionInfo();
         renderCards();
         refreshDashboard();
 
@@ -1132,7 +1180,7 @@ function initStationSettingsPanel() {
 
     selectAllBtn.addEventListener("click", () => {
 
-        selectedSpotKeys = ALL_SPOTS.map(spot => spot.key);
+        selectedSpotKeys = getSortedSpots().slice(0, MAX_SELECTED_SPOTS).map(spot => spot.key);
         saveSpotSelection(selectedSpotKeys);
         renderStationCheckboxes();
         renderCards();

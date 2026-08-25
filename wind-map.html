@@ -759,6 +759,33 @@ async function loadAllAmlSpots() {
 }
 
 
+function getVisibleAmlSpots() {
+
+    const amlSpots = ALL_SPOTS.filter(spot => spot.source === "aml");
+
+    if (!mapInstance) {
+        return amlSpots;
+    }
+
+    const bounds = mapInstance.getBounds();
+
+    return amlSpots.filter(spot =>
+        Number.isFinite(spot.lat) &&
+        Number.isFinite(spot.lng) &&
+        bounds.contains([spot.lat, spot.lng])
+    );
+
+}
+
+
+async function loadVisibleAmlSpots() {
+    // N'appelle le proxy AML que pour les stations actuellement visibles
+    // à l'écran (zone de la carte) : évite de rafraîchir les 30 stations
+    // à chaque cycle si l'utilisateur est zoomé sur une petite zone.
+    await Promise.allSettled(getVisibleAmlSpots().map(loadAmlSpot));
+}
+
+
 /* =========================================================
    BLOC 9 : CARTE COMPASS RÉUTILISÉE DANS LE POPUP
    (identique à buildCardHtml() du dashboard)
@@ -909,15 +936,31 @@ async function refreshMap() {
     await Promise.allSettled([
         loadIPMA(),
         loadHidromod(),
-        loadAllAmlSpots()
+        loadVisibleAmlSpots()
     ]);
 }
 
 
 initMap();
-refreshMap();
 
+// Premier chargement : toutes les stations AML (pour ne rien laisser
+// vide au premier affichage, même hors de la zone visible initiale).
+loadAllAmlSpots();
+loadIPMA();
+loadHidromod();
+
+// Rafraîchissement périodique : seulement les stations AML visibles
+// dans la zone actuelle de la carte.
 setInterval(refreshMap, 10 * 60 * 1000);
+
+// Pan/zoom terminé : recharge immédiatement les stations AML qui
+// viennent d'entrer dans le cadre (pas besoin d'attendre 10 min).
+let viewportLoadTimeout = null;
+
+mapInstance?.on?.("moveend", () => {
+    clearTimeout(viewportLoadTimeout);
+    viewportLoadTimeout = setTimeout(loadVisibleAmlSpots, 400);
+});
 
 </script>
 
