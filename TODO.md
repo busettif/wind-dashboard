@@ -1,2 +1,2 @@
-Adjust elements disposition on data card
+- [ ] Adjust elements disposition on data card
 On Map view, add a favorite button on data card, to modify the stations list on homepage
