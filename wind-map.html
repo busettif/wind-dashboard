@@ -160,7 +160,25 @@ h1 {
 }
 
 .spot-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.spot-footer-right {
     text-align: right;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
 }
 
 .update-time {
@@ -553,6 +571,121 @@ let mapInstance = null;
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
 const ONE_DAY_MS = 24 * ONE_HOUR_MS;
+
+
+/* =========================================================
+   FAVORIS (partagés avec index.html via localStorage)
+   ---------------------------------------------------------
+   Même clé, même limite de 10 stations et même sélection par
+   défaut (5 premières par ordre alphabétique) que sur la page
+   d'accueil, pour rester parfaitement synchronisé.
+========================================================= */
+
+const SPOT_SELECTION_STORAGE_KEY = "windDashboard.selectedSpots";
+const DEFAULT_SELECTION_COUNT = 5;
+const MAX_SELECTED_SPOTS = 10;
+
+
+function getSortedSpots() {
+    return [...ALL_SPOTS].sort((a, b) => a.name.localeCompare(b.name));
+}
+
+
+function loadSpotSelection() {
+
+    try {
+
+        const raw = localStorage.getItem(SPOT_SELECTION_STORAGE_KEY);
+
+        if (!raw) {
+            return getSortedSpots().slice(0, DEFAULT_SELECTION_COUNT).map(spot => spot.key);
+        }
+
+        const parsed = JSON.parse(raw);
+
+        return Array.isArray(parsed)
+            ? parsed
+            : getSortedSpots().slice(0, DEFAULT_SELECTION_COUNT).map(spot => spot.key);
+
+    }
+    catch (error) {
+
+        console.error("Erreur lecture sélection :", error);
+        return getSortedSpots().slice(0, DEFAULT_SELECTION_COUNT).map(spot => spot.key);
+
+    }
+
+}
+
+
+function saveSpotSelection(keys) {
+
+    try {
+        localStorage.setItem(SPOT_SELECTION_STORAGE_KEY, JSON.stringify(keys));
+    }
+    catch (error) {
+        console.error("Erreur sauvegarde sélection :", error);
+    }
+
+}
+
+
+let favoriteSpotKeys = loadSpotSelection();
+
+
+function isFavorite(spotKey) {
+    return favoriteSpotKeys.includes(spotKey);
+}
+
+
+function updateFavoriteButton(spotKey) {
+
+    const fav = isFavorite(spotKey);
+
+    const starPath = document.getElementById(elementId(spotKey, "favStar"));
+    const btn = document.getElementById(elementId(spotKey, "favBtn"));
+
+    if (starPath) {
+        starPath.setAttribute("fill", fav ? "#f5c518" : "none");
+    }
+
+    if (btn) {
+        btn.title = fav
+            ? "Remove from favorites (home page)"
+            : "Add to favorites (home page)";
+    }
+
+}
+
+
+function toggleFavorite(spotKey) {
+
+    // Relit le localStorage avant de modifier, au cas où la sélection
+    // aurait changé ailleurs (autre onglet, page d'accueil) entre-temps.
+    favoriteSpotKeys = loadSpotSelection();
+
+    const fav = isFavorite(spotKey);
+
+    if (fav) {
+
+        favoriteSpotKeys = favoriteSpotKeys.filter(key => key !== spotKey);
+
+    }
+    else {
+
+        if (favoriteSpotKeys.length >= MAX_SELECTED_SPOTS) {
+            window.alert(`Maximum ${MAX_SELECTED_SPOTS} stations. Remove one first from the home page favorites.`);
+            return;
+        }
+
+        favoriteSpotKeys = [...favoriteSpotKeys, spotKey];
+
+    }
+
+    saveSpotSelection(favoriteSpotKeys);
+    updateFavoriteButton(spotKey);
+
+}
 
 
 function setMarkerVisible(spot, visible) {
@@ -986,8 +1119,15 @@ function buildCardHtml(spot) {
         </div>
         <div id="${errorId}" class="error-message"></div>
         <div class="spot-footer">
-            <div id="${updateId}" class="update-time">--.--.-- --:--</div>
-            <div class="source">Source: ${spot.sourceLabel}</div>
+            <button type="button" class="favorite-btn" id="${elementId(spot.key, "favBtn")}" onclick="toggleFavorite('${spot.key}')" title="Add to favorites (home page)">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                    <path id="${elementId(spot.key, "favStar")}" d="M12 2 L14.9 8.6 L22 9.3 L16.7 14 L18.2 21 L12 17.3 L5.8 21 L7.3 14 L2 9.3 L9.1 8.6 Z" fill="none" stroke="#111" stroke-width="1.3"/>
+                </svg>
+            </button>
+            <div class="spot-footer-right">
+                <div id="${updateId}" class="update-time">--.--.-- --:--</div>
+                <div class="source">Source: ${spot.sourceLabel}</div>
+            </div>
         </div>
     </div>`;
 
@@ -1160,6 +1300,11 @@ async function initMap() {
             else {
                 setSpotUnavailable(spot.key, cached.message || "No observation available");
             }
+
+            // Reflète l'état favori actuel (peut avoir changé depuis un
+            // autre onglet ou la page d'accueil).
+            favoriteSpotKeys = loadSpotSelection();
+            updateFavoriteButton(spot.key);
 
         });
 
