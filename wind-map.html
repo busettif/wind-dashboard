@@ -297,6 +297,15 @@ const AML_URL_BASE =
 const WINDY_URL_BASE =
     "https://api.windyapp.co/v10/meteostations/getData/";
 
+// Wunderground/IBM : appel direct, CORS confirmé ouvert. ATTENTION : clé
+// trouvée dans le trafic réseau de wunderground.com lui-même, pas une clé
+// qui nous a été attribuée — peut être révoquée/tournée par IBM sans
+// préavis.
+const WUNDERGROUND_URL_BASE =
+    "https://api.weather.com/v2/pws/observations/current";
+const WUNDERGROUND_API_KEY =
+    "e1f10a1e78da46f5b10a1e78da96f525";
+
 const ALL_SPOTS = [
 
     {
@@ -387,7 +396,44 @@ const ALL_SPOTS = [
     { key: "windy-lpmt", name: "Portugal - Setubal - Montijo (MADIS_LPMT)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_LPMT", lat: 38.700001, lng: -9.02, coastlinePath: "M -195.4 152.1 L 395.4 47.9 L 464.9 441.8 L -126.0 546.0 Z" },
     { key: "windy-f5968", name: "FW5968 Cascais PT (F5968)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_F5968", lat: 38.712002, lng: -9.42 },
     { key: "windy-lpov-raw", name: "Ovar", source: "windy", sourceLabel: "windy.app", windyStationId: "LPOV", lat: 40.91587, lng: -8.64592, coastlinePath: "M 157.2 -194.5 L 42.8 394.5 L -349.9 318.2 L -235.4 -270.8 Z" },
-    { key: "windy-lpfr-raw", name: "Faro", source: "windy", sourceLabel: "windy.app", windyStationId: "LPFR", lat: 37.01667, lng: -7.96667, coastlinePath: "M -129.8 -92.8 L 329.8 292.8 L 72.7 599.3 L -386.9 213.6 Z" }
+    { key: "windy-lpfr-raw", name: "Faro", source: "windy", sourceLabel: "windy.app", windyStationId: "LPFR", lat: 37.01667, lng: -7.96667, coastlinePath: "M -129.8 -92.8 L 329.8 292.8 L 72.7 599.3 L -386.9 213.6 Z" },
+
+    // --- Stations Wunderground (27.08.2026, noms officiels d'origine) ---
+    { key: "wu-atala1", name: "Atalaia (IATALA1)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IATALA1", lat: 39.237, lng: -9.336 },
+    { key: "wu-ribam31", name: "Ribamar (IRIBAM31)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IRIBAM31", lat: 39.211378, lng: -9.342215 },
+    { key: "wu-adosc6", name: "A dos Cunhados (IADOSC6)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IADOSC6", lat: 39.148515, lng: -9.370682 },
+    { key: "wu-adosc5", name: "A dos Cunhados (IADOSC5)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IADOSC5", lat: 39.145758, lng: -9.364734 },
+    { key: "wu-adosc8", name: "A dos Cunhados (IADOSC8)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IADOSC8", lat: 39.139, lng: -9.377 },
+    { key: "wu-encar5", name: "Encarnação (IENCAR5)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IENCAR5", lat: 39.05, lng: -9.401 },
+    { key: "wu-encar4", name: "Encarnação (IENCAR4)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IENCAR4", lat: 39.027773, lng: -9.411064 },
+    { key: "wu-erice20", name: "Ericeira (IERICE20)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IERICE20", lat: 38.983, lng: -9.413 },
+    { key: "wu-erice10", name: "Ericeira (IERICE10)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IERICE10", lat: 38.974, lng: -9.417 },
+    { key: "wu-erice8", name: "Ericeira (IERICE8)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IERICE8", lat: 38.950532, lng: -9.409281 },
+    { key: "wu-carvo11", name: "Carvoeira (ICARVO11)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICARVO11", lat: 38.931935, lng: -9.402363 },
+    { key: "wu-sojoo79", name: "São João das Lampas (ISOJOO79)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ISOJOO79", lat: 38.875903, lng: -9.422428 },
+    { key: "wu-colar16", name: "Colares (ICOLAR16)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICOLAR16", lat: 38.822611, lng: -9.464457 },
+    { key: "wu-colar12", name: "Colares (ICOLAR12)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICOLAR12", lat: 38.819, lng: -9.46 },
+    { key: "wu-colar13", name: "Colares (ICOLAR13)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICOLAR13", lat: 38.776198, lng: -9.483087 },
+    { key: "wu-cascais34", name: "Almoinhas Velhas (ICASCAIS34)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCAIS34", lat: 38.751587, lng: -9.456711 },
+    { key: "wu-casca79", name: "Cascais (ICASCA79)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCA79", lat: 38.734, lng: -9.456 },
+    { key: "wu-casca9", name: "Cascais (ICASCA9)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCA9", lat: 38.70192, lng: -9.461759 },
+    { key: "wu-lisbo12", name: "Lisboa Region (ILISBO12)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ILISBO12", lat: 38.694699, lng: -9.416589 },
+    { key: "wu-casca75", name: "Cascais (ICASCA75)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCA75", lat: 38.698, lng: -9.425 },
+    { key: "wu-cascais30", name: "Av. Marginal (ICASCAIS30)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCAIS30", lat: 38.686188, lng: -9.353477 },
+    { key: "wu-oeira15", name: "Oeiras (IOEIRA15)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IOEIRA15", lat: 38.688, lng: -9.313 },
+    { key: "wu-queijas3", name: "Santo Amaro Oeiras (IQUEIJAS3)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IQUEIJAS3", lat: 38.689964, lng: -9.307979 },
+    { key: "wu-algs10", name: "Algés (IALGS10)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IALGS10", lat: 38.702, lng: -9.231 },
+    { key: "wu-charn9", name: "Charneca da Caparica (ICHARN9)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICHARN9", lat: 38.616627, lng: -9.20588 },
+    { key: "wu-charn59", name: "Charneca da Caparica (ICHARN59)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICHARN59", lat: 38.579, lng: -9.187 },
+    { key: "wu-charn62", name: "Charneca da Caparica (ICHARN62)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICHARN62", lat: 38.569, lng: -9.18 },
+    { key: "wu-sesim17", name: "Sesimbra (ISESIM17)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ISESIM17", lat: 38.431, lng: -9.191 },
+    { key: "wu-louri4", name: "Lourinhã (ILOURI4)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ILOURI4", lat: 39.272, lng: -9.332 },
+    { key: "wu-saobe2", name: "Sao Bernardino (I10SAOBE2)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "I10SAOBE2", lat: 39.31041, lng: -9.345184 },
+    { key: "wu-amore3", name: "Amoreira (IAMORE3)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IAMORE3", lat: 39.380349, lng: -9.282886 },
+    { key: "wu-vau4", name: "Vau (IVAU4)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IVAU4", lat: 39.406561, lng: -9.217715 },
+    { key: "wu-nadad2", name: "Nadadouro (INADAD2)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "INADAD2", lat: 39.421, lng: -9.179 },
+    { key: "wu-fozdo29", name: "Foz do Arelho (IFOZDO29)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IFOZDO29", lat: 39.42133, lng: -9.201604 },
+    { key: "wu-fozdo31", name: "Foz do Arelho (IFOZDO31)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IFOZDO31", lat: 39.439104, lng: -9.214941 }
 
 ];
 
@@ -1059,6 +1105,90 @@ async function loadAllWindySpots() {
 
 
 /* =========================================================
+   BLOC 8-TER : DONNÉES WUNDERGROUND (appel direct, pas de proxy)
+========================================================= */
+
+function parseWundergroundTimestamp(raw) {
+
+    if (!raw || typeof raw !== "string") {
+        return null;
+    }
+
+    const match = raw.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/);
+
+    if (!match) {
+        return null;
+    }
+
+    const [, year, month, day, hour, minute, second] = match;
+
+    return new Date(
+        Number(year),
+        Number(month) - 1,
+        Number(day),
+        Number(hour),
+        Number(minute),
+        Number(second)
+    );
+
+}
+
+
+async function loadWundergroundSpot(spot) {
+
+    try {
+
+        const url =
+            WUNDERGROUND_URL_BASE +
+            "?apiKey=" + WUNDERGROUND_API_KEY +
+            "&stationId=" + spot.wundergroundStationId +
+            "&numericPrecision=decimal&format=json&units=m";
+
+        const response = await fetch(url, { cache: "no-store" });
+
+        if (!response.ok) {
+            throw new Error("HTTP Wunderground " + response.status);
+        }
+
+        const json = await response.json();
+        const obs = json?.observations?.[0];
+
+        if (!obs) {
+            applySpotUnavailable(spot, "No observation available");
+            return;
+        }
+
+        const average = kmhToKnots(obs.metric?.windSpeed);
+        const gust = kmhToKnots(obs.metric?.windGust);
+        const directionDeg = Number(obs.winddir);
+        const measuredAt = parseWundergroundTimestamp(obs.obsTimeLocal);
+
+        applySpotResult(spot, {
+            average,
+            gust,
+            directionDeg,
+            timeText: formatDateObject(measuredAt),
+            measuredAt
+        });
+
+    }
+    catch (error) {
+
+        console.error("Erreur Wunderground " + spot.key + " :", error);
+
+        applySpotUnavailable(spot, "");
+
+    }
+
+}
+
+
+async function loadVisibleWundergroundSpots() {
+    await Promise.allSettled(getVisibleSpotsBySource("wunderground").map(loadWundergroundSpot));
+}
+
+
+/* =========================================================
    BLOC 9 : CARTE COMPASS RÉUTILISÉE DANS LE POPUP
    (identique à buildCardHtml() du dashboard)
 ========================================================= */
@@ -1324,7 +1454,8 @@ async function refreshMap() {
         loadIPMA(),
         loadHidromod(),
         loadVisibleAmlSpots(),
-        loadVisibleWindySpots()
+        loadVisibleWindySpots(),
+        loadVisibleWundergroundSpots()
     ]);
 }
 
@@ -1342,13 +1473,14 @@ initMap().then(() => {
     loadIPMA();
     loadHidromod();
     loadVisibleWindySpots();
+    loadVisibleWundergroundSpots();
 
-    // Rafraîchissement périodique : seulement les stations AML et Windy.app
-    // visibles dans la zone actuelle de la carte.
+    // Rafraîchissement périodique : seulement les stations AML, Windy.app
+    // et Wunderground visibles dans la zone actuelle de la carte.
     setInterval(refreshMap, 10 * 60 * 1000);
 
-    // Pan/zoom terminé : recharge immédiatement les stations AML et Windy.app
-    // qui viennent d'entrer dans le cadre (pas besoin d'attendre 10 min).
+    // Pan/zoom terminé : recharge immédiatement les stations qui viennent
+    // d'entrer dans le cadre (pas besoin d'attendre 10 min).
     let viewportLoadTimeout = null;
 
     mapInstance.on("moveend", () => {
@@ -1356,6 +1488,7 @@ initMap().then(() => {
         viewportLoadTimeout = setTimeout(() => {
             loadVisibleAmlSpots();
             loadVisibleWindySpots();
+            loadVisibleWundergroundSpots();
         }, 400);
     });
 

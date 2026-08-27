@@ -347,6 +347,18 @@ const AML_URL_BASE =
 const WINDY_URL_BASE =
     "https://api.windyapp.co/v10/meteostations/getData/";
 
+// Wunderground/IBM : appel direct, CORS confirmé ouvert (testé le
+// 27.08.2026). ATTENTION : la clé ci-dessous est celle utilisée par le
+// site wunderground.com lui-même (trouvée dans leurs propres requêtes
+// réseau), pas une clé qui nous a été attribuée. IBM peut la faire
+// tourner à tout moment sans préavis, ce qui casserait cette source du
+// jour au lendemain, sans avertissement. Voir la discussion sur les
+// implications légales avant d'étendre davantage cette intégration.
+const WUNDERGROUND_URL_BASE =
+    "https://api.weather.com/v2/pws/observations/current";
+const WUNDERGROUND_API_KEY =
+    "e1f10a1e78da46f5b10a1e78da96f525";
+
 const ALL_SPOTS = [
 
     // --- Les 4 spots définis manuellement : NE PAS MODIFIER coastlinePath ---
@@ -432,7 +444,44 @@ const ALL_SPOTS = [
     { key: "windy-lpmt", name: "Portugal - Setubal - Montijo (MADIS_LPMT)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_LPMT", coastlinePath: "M -195.4 152.1 L 395.4 47.9 L 464.9 441.8 L -126.0 546.0 Z" },
     { key: "windy-f5968", name: "FW5968 Cascais PT (F5968)", source: "windy", sourceLabel: "windy.app", windyStationId: "MADIS_F5968" },
     { key: "windy-lpov-raw", name: "Ovar", source: "windy", sourceLabel: "windy.app", windyStationId: "LPOV", coastlinePath: "M 157.2 -194.5 L 42.8 394.5 L -349.9 318.2 L -235.4 -270.8 Z" },
-    { key: "windy-lpfr-raw", name: "Faro", source: "windy", sourceLabel: "windy.app", windyStationId: "LPFR", coastlinePath: "M -129.8 -92.8 L 329.8 292.8 L 72.7 599.3 L -386.9 213.6 Z" }
+    { key: "windy-lpfr-raw", name: "Faro", source: "windy", sourceLabel: "windy.app", windyStationId: "LPFR", coastlinePath: "M -129.8 -92.8 L 329.8 292.8 L 72.7 599.3 L -386.9 213.6 Z" },
+
+    // --- Stations Wunderground (27.08.2026, noms officiels d'origine) ---
+    { key: "wu-atala1", name: "Atalaia (IATALA1)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IATALA1" },
+    { key: "wu-ribam31", name: "Ribamar (IRIBAM31)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IRIBAM31" },
+    { key: "wu-adosc6", name: "A dos Cunhados (IADOSC6)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IADOSC6" },
+    { key: "wu-adosc5", name: "A dos Cunhados (IADOSC5)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IADOSC5" },
+    { key: "wu-adosc8", name: "A dos Cunhados (IADOSC8)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IADOSC8" },
+    { key: "wu-encar5", name: "Encarnação (IENCAR5)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IENCAR5" },
+    { key: "wu-encar4", name: "Encarnação (IENCAR4)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IENCAR4" },
+    { key: "wu-erice20", name: "Ericeira (IERICE20)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IERICE20" },
+    { key: "wu-erice10", name: "Ericeira (IERICE10)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IERICE10" },
+    { key: "wu-erice8", name: "Ericeira (IERICE8)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IERICE8" },
+    { key: "wu-carvo11", name: "Carvoeira (ICARVO11)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICARVO11" },
+    { key: "wu-sojoo79", name: "São João das Lampas (ISOJOO79)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ISOJOO79" },
+    { key: "wu-colar16", name: "Colares (ICOLAR16)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICOLAR16" },
+    { key: "wu-colar12", name: "Colares (ICOLAR12)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICOLAR12" },
+    { key: "wu-colar13", name: "Colares (ICOLAR13)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICOLAR13" },
+    { key: "wu-cascais34", name: "Almoinhas Velhas (ICASCAIS34)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCAIS34" },
+    { key: "wu-casca79", name: "Cascais (ICASCA79)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCA79" },
+    { key: "wu-casca9", name: "Cascais (ICASCA9)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCA9" },
+    { key: "wu-lisbo12", name: "Lisboa Region (ILISBO12)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ILISBO12" },
+    { key: "wu-casca75", name: "Cascais (ICASCA75)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCA75" },
+    { key: "wu-cascais30", name: "Av. Marginal (ICASCAIS30)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICASCAIS30" },
+    { key: "wu-oeira15", name: "Oeiras (IOEIRA15)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IOEIRA15" },
+    { key: "wu-queijas3", name: "Santo Amaro Oeiras (IQUEIJAS3)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IQUEIJAS3" },
+    { key: "wu-algs10", name: "Algés (IALGS10)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IALGS10" },
+    { key: "wu-charn9", name: "Charneca da Caparica (ICHARN9)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICHARN9" },
+    { key: "wu-charn59", name: "Charneca da Caparica (ICHARN59)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICHARN59" },
+    { key: "wu-charn62", name: "Charneca da Caparica (ICHARN62)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ICHARN62" },
+    { key: "wu-sesim17", name: "Sesimbra (ISESIM17)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ISESIM17" },
+    { key: "wu-louri4", name: "Lourinhã (ILOURI4)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "ILOURI4" },
+    { key: "wu-saobe2", name: "Sao Bernardino (I10SAOBE2)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "I10SAOBE2" },
+    { key: "wu-amore3", name: "Amoreira (IAMORE3)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IAMORE3" },
+    { key: "wu-vau4", name: "Vau (IVAU4)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IVAU4" },
+    { key: "wu-nadad2", name: "Nadadouro (INADAD2)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "INADAD2" },
+    { key: "wu-fozdo29", name: "Foz do Arelho (IFOZDO29)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IFOZDO29" },
+    { key: "wu-fozdo31", name: "Foz do Arelho (IFOZDO31)", source: "wunderground", sourceLabel: "wunderground.com", wundergroundStationId: "IFOZDO31" }
 
 ];
 
@@ -1089,6 +1138,98 @@ async function loadAllWindySpots() {
 
 
 /* =========================================================
+   BLOC 7-TER : DONNÉES WUNDERGROUND
+   ---------------------------------------------------------
+   Appel direct. Vitesses déjà en km/h (units=m demandé dans l'URL),
+   converties en noeuds. obsTimeLocal est déjà en heure locale de
+   la station ("AAAA-MM-JJ HH:MM:SS").
+========================================================= */
+
+function parseWundergroundTimestamp(raw) {
+
+    if (!raw || typeof raw !== "string") {
+        return null;
+    }
+
+    const match = raw.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/);
+
+    if (!match) {
+        return null;
+    }
+
+    const [, year, month, day, hour, minute, second] = match;
+
+    return new Date(
+        Number(year),
+        Number(month) - 1,
+        Number(day),
+        Number(hour),
+        Number(minute),
+        Number(second)
+    );
+
+}
+
+
+async function loadWundergroundSpot(spot) {
+
+    try {
+
+        const url =
+            WUNDERGROUND_URL_BASE +
+            "?apiKey=" + WUNDERGROUND_API_KEY +
+            "&stationId=" + spot.wundergroundStationId +
+            "&numericPrecision=decimal&format=json&units=m";
+
+        const response = await fetch(url, { cache: "no-store" });
+
+        if (!response.ok) {
+            throw new Error("HTTP Wunderground " + response.status);
+        }
+
+        const json = await response.json();
+        const obs = json?.observations?.[0];
+
+        if (!obs) {
+            setSpotUnavailable(spot.key, "No observation available");
+            return;
+        }
+
+        const average = kmhToKnots(obs.metric?.windSpeed);
+        const gust = kmhToKnots(obs.metric?.windGust);
+        const directionDeg = Number(obs.winddir);
+        const measuredAt = parseWundergroundTimestamp(obs.obsTimeLocal);
+
+        updateSpotDisplay(spot.key, {
+            average,
+            gust,
+            directionDeg,
+            timeText: formatDateObject(measuredAt),
+            measuredAt
+        });
+
+    }
+    catch (error) {
+
+        console.error("Erreur Wunderground " + spot.key + " :", error);
+
+        setSpotUnavailable(spot.key, "");
+
+    }
+
+}
+
+
+async function loadAllWundergroundSpots() {
+
+    const wuSpots = ALL_SPOTS.filter(spot => spot.source === "wunderground");
+
+    await Promise.allSettled(wuSpots.map(loadWundergroundSpot));
+
+}
+
+
+/* =========================================================
    BLOC 8 : SÉLECTION DES CARTES (persistée, triée alphabétiquement)
 ========================================================= */
 
@@ -1368,7 +1509,8 @@ async function refreshDashboard() {
         loadIPMA(),
         loadHidromod(),
         loadAllAmlSpots(),
-        loadAllWindySpots()
+        loadAllWindySpots(),
+        loadAllWundergroundSpots()
     ]);
 
 }
