@@ -71,7 +71,14 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     pointer-events: none;
+}
+
+.map-marker-offline {
+    width: 28px;
+    height: 28px;
+    opacity: 0.85;
 }
 
 .map-marker-arrow-svg {
@@ -577,6 +584,14 @@ function applySpotResult(spot, options) {
 
     setMarkerVisible(spot, true);
 
+    // Requête réussie : on s'assure que l'affichage normal (flèche +
+    // valeurs) est visible, et que l'icône "offline" est masquée.
+    const normalEl = document.getElementById("marker-" + spot.key + "-normal");
+    const offlineEl = document.getElementById("marker-" + spot.key + "-offline");
+
+    if (normalEl) normalEl.style.display = "";
+    if (offlineEl) offlineEl.style.display = "none";
+
     // < 60 min : flèche noire (fraîche). Entre 60 min et 24h (ou âge
     // inconnu) : flèche grise, pour signaler une donnée moins récente.
     const isFresh = ageMs !== null && ageMs < ONE_HOUR_MS;
@@ -629,23 +644,15 @@ function applySpotUnavailable(spot, message) {
 
     setMarkerVisible(spot, true);
 
-    const arrowSvg = document.getElementById("marker-" + spot.key + "-arrow");
-    const valueEl = document.getElementById("marker-" + spot.key + "-value");
-    const timeEl = document.getElementById("marker-" + spot.key + "-time");
+    // Échec réseau : au lieu d'afficher "no data" + une date vide (ce qui
+    // pollue la carte quand une source est down), on remplace tout
+    // l'affichage du marqueur par une petite icône "hors ligne", avec une
+    // info-bulle native au survol.
+    const normalEl = document.getElementById("marker-" + spot.key + "-normal");
+    const offlineEl = document.getElementById("marker-" + spot.key + "-offline");
 
-    if (arrowSvg) {
-        arrowSvg.style.visibility = "hidden";
-    }
-
-    if (valueEl) {
-        valueEl.textContent = "no data";
-        valueEl.classList.add("no-data");
-    }
-
-    if (timeEl) {
-        timeEl.textContent = "--.--.-- --:--";
-        timeEl.classList.remove("fresh");
-    }
+    if (normalEl) normalEl.style.display = "none";
+    if (offlineEl) offlineEl.style.display = "";
 
     setSpotUnavailable(spot.key, message);
 
@@ -963,16 +970,29 @@ function buildMarkerIconHtml(spot) {
     // compass du dashboard (la flèche va de la provenance vers le centre).
     return `
         <div class="map-marker">
-            <svg class="map-marker-arrow-svg" id="marker-${spot.key}-arrow" viewBox="0 0 40 40" style="visibility:hidden;">
-                <defs>
-                    <marker id="marker-${spot.key}-head" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto" markerUnits="strokeWidth">
-                        <path id="marker-${spot.key}-head-path" d="M0,0 L0,5 L6,2.5 z" fill="#111"/>
-                    </marker>
-                </defs>
-                <line id="marker-${spot.key}-line" x1="20" y1="4" x2="20" y2="30" stroke="#111" stroke-width="4" stroke-linecap="round" marker-end="url(#marker-${spot.key}-head)"/>
-            </svg>
-            <div class="map-marker-value no-data" id="marker-${spot.key}-value">--</div>
-            <div class="map-marker-time" id="marker-${spot.key}-time">--.--.-- --:--</div>
+
+            <div class="map-marker-normal" id="marker-${spot.key}-normal">
+                <svg class="map-marker-arrow-svg" id="marker-${spot.key}-arrow" viewBox="0 0 40 40" style="visibility:hidden;">
+                    <defs>
+                        <marker id="marker-${spot.key}-head" markerWidth="7" markerHeight="7" refX="5" refY="2.5" orient="auto" markerUnits="strokeWidth">
+                            <path id="marker-${spot.key}-head-path" d="M0,0 L0,5 L6,2.5 z" fill="#111"/>
+                        </marker>
+                    </defs>
+                    <line id="marker-${spot.key}-line" x1="20" y1="4" x2="20" y2="30" stroke="#111" stroke-width="4" stroke-linecap="round" marker-end="url(#marker-${spot.key}-head)"/>
+                </svg>
+                <div class="map-marker-value no-data" id="marker-${spot.key}-value">--</div>
+                <div class="map-marker-time" id="marker-${spot.key}-time">--.--.-- --:--</div>
+            </div>
+
+            <div class="map-marker-offline" id="marker-${spot.key}-offline" style="display:none; pointer-events:auto;" title="Source offline">
+                <svg viewBox="0 0 24 24" width="28" height="28">
+                    <circle cx="12" cy="12" r="9" fill="none" stroke="#888" stroke-width="1.5"/>
+                    <ellipse cx="12" cy="12" rx="4" ry="9" fill="none" stroke="#888" stroke-width="1.5"/>
+                    <line x1="3" y1="12" x2="21" y2="12" stroke="#888" stroke-width="1.5"/>
+                    <line x1="4" y1="20" x2="20" y2="4" stroke="#888" stroke-width="2.5"/>
+                </svg>
+            </div>
+
         </div>`;
 }
 
