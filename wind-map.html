@@ -800,17 +800,17 @@ async function loadAllAmlSpots() {
 }
 
 
-function getVisibleAmlSpots() {
+function getVisibleSpotsBySource(source) {
 
-    const amlSpots = ALL_SPOTS.filter(spot => spot.source === "aml");
+    const spots = ALL_SPOTS.filter(spot => spot.source === source);
 
     if (!mapInstance) {
-        return amlSpots;
+        return spots;
     }
 
     const bounds = mapInstance.getBounds();
 
-    return amlSpots.filter(spot =>
+    return spots.filter(spot =>
         Number.isFinite(spot.lat) &&
         Number.isFinite(spot.lng) &&
         bounds.contains([spot.lat, spot.lng])
@@ -819,11 +819,23 @@ function getVisibleAmlSpots() {
 }
 
 
+function getVisibleAmlSpots() {
+    return getVisibleSpotsBySource("aml");
+}
+
+
 async function loadVisibleAmlSpots() {
     // N'appelle le proxy AML que pour les stations actuellement visibles
-    // à l'écran (zone de la carte) : évite de rafraîchir les 30 stations
-    // à chaque cycle si l'utilisateur est zoomé sur une petite zone.
+    // à l'écran (zone de la carte) : évite de rafraîchir toutes les
+    // stations si l'utilisateur est zoomé sur une petite zone.
     await Promise.allSettled(getVisibleAmlSpots().map(loadAmlSpot));
+}
+
+
+async function loadVisibleWindySpots() {
+    // Même principe que pour AML : Windy.app fait un appel par station,
+    // donc autant ne charger que celles actuellement dans le cadre.
+    await Promise.allSettled(getVisibleSpotsBySource("windy").map(loadWindySpot));
 }
 
 
@@ -886,6 +898,8 @@ async function loadWindySpot(spot) {
 
 
 async function loadAllWindySpots() {
+    // Conservé pour un usage éventuel (ex: bouton "tout charger"), mais
+    // n'est plus appelé dans le cycle normal - voir loadVisibleWindySpots.
     const windySpots = ALL_SPOTS.filter(spot => spot.source === "windy");
     await Promise.allSettled(windySpots.map(loadWindySpot));
 }
@@ -997,9 +1011,33 @@ function buildMarkerIconHtml(spot) {
 }
 
 
+function computeSquareBounds(centerLat, centerLng, sideKm) {
+
+    // Approximation simple : 1° de latitude ~ 111.32 km ; la longitude
+    // dépend du cosinus de la latitude (les degrés sont plus "serrés"
+    // en s'éloignant de l'équateur).
+    const halfKm = sideKm / 2;
+    const latDelta = halfKm / 111.32;
+    const lonDelta = halfKm / (111.32 * Math.cos(centerLat * Math.PI / 180));
+
+    return L.latLngBounds(
+        [centerLat - latDelta, centerLng - lonDelta],
+        [centerLat + latDelta, centerLng + lonDelta]
+    );
+
+}
+
+
 function initMap() {
 
-    mapInstance = L.map("map").setView([38.75, -9.1], 10);
+    mapInstance = L.map("map");
+
+    // Zone initiale : ~15km x 15km centrée sur Lisbonne/Setúbal.
+    // fitBounds calcule automatiquement le zoom adapté à la taille réelle
+    // de l'écran, contrairement à un niveau de zoom fixe.
+    mapInstance.fitBounds(
+        computeSquareBounds(38.75, -9.1, 15)
+    );
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "&copy; OpenStreetMap contributors",
@@ -1057,31 +1095,36 @@ async function refreshMap() {
         loadIPMA(),
         loadHidromod(),
         loadVisibleAmlSpots(),
-        loadAllWindySpots()
+        loadVisibleWindySpots()
     ]);
 }
 
 
 initMap();
 
-// Premier chargement : toutes les stations AML (pour ne rien laisser
-// vide au premier affichage, même hors de la zone visible initiale).
-loadAllAmlSpots();
+// Premier chargement : IPMA et Hidromod sont des appels uniques, peu
+// coûteux, donc chargés systématiquement (2 stations au total). AML et
+// Windy.app font un appel par station : on ne charge que celles situées
+// dans la zone actuellement affichée (~15km x 15km à l'ouverture).
+loadVisibleAmlSpots();
 loadIPMA();
 loadHidromod();
-loadAllWindySpots();
+loadVisibleWindySpots();
 
-// Rafraîchissement périodique : seulement les stations AML visibles
-// dans la zone actuelle de la carte.
+// Rafraîchissement périodique : seulement les stations AML et Windy.app
+// visibles dans la zone actuelle de la carte.
 setInterval(refreshMap, 10 * 60 * 1000);
 
-// Pan/zoom terminé : recharge immédiatement les stations AML qui
-// viennent d'entrer dans le cadre (pas besoin d'attendre 10 min).
+// Pan/zoom terminé : recharge immédiatement les stations AML et Windy.app
+// qui viennent d'entrer dans le cadre (pas besoin d'attendre 10 min).
 let viewportLoadTimeout = null;
 
 mapInstance?.on?.("moveend", () => {
     clearTimeout(viewportLoadTimeout);
-    viewportLoadTimeout = setTimeout(loadVisibleAmlSpots, 400);
+    viewportLoadTimeout = setTimeout(() => {
+        loadVisibleAmlSpots();
+        loadVisibleWindySpots();
+    }, 400);
 });
 
 </script>
