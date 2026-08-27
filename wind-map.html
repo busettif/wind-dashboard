@@ -118,26 +118,31 @@ h1 {
 
 .leaflet-popup-content .spot {
     width: 220px;
-}
-
-.spot-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 20px;
-    margin-bottom: 2px;
-    gap: 6px;
+    flex-direction: column;
 }
 
 .spot-name {
     font-size: 14px;
     font-weight: bold;
+    text-align: center;
+    min-height: 50px;
+    line-height: 1.2;
+}
+
+.compass-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spot-footer {
+    text-align: right;
 }
 
 .update-time {
     font-size: 11px;
     color: #777;
-    text-align: right;
     white-space: nowrap;
 }
 
@@ -191,7 +196,6 @@ h1 {
 }
 
 .source {
-    text-align: right;
     color: #999;
     font-size: 10px;
     margin-top: 2px;
@@ -914,10 +918,8 @@ function buildCardHtml(spot) {
 
     return `
     <div class="spot">
-        <div class="spot-header">
-            <div class="spot-name">${spot.name}</div>
-            <div id="${updateId}" class="update-time">--.--.-- --:--</div>
-        </div>
+        <div class="spot-name">${spot.name}</div>
+        <div class="compass-wrapper">
         <svg class="compass" viewBox="-20 -20 240 240">
             <defs>
                 <marker id="${markerId}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth">
@@ -940,8 +942,12 @@ function buildCardHtml(spot) {
             <text id="${avgId}" x="100" y="83" text-anchor="middle" class="avg">--</text>
             <text id="${gustId}" x="100" y="128" text-anchor="middle" class="gust">--</text>
         </svg>
+        </div>
         <div id="${errorId}" class="error-message"></div>
-        <div class="source">Source: ${spot.sourceLabel}</div>
+        <div class="spot-footer">
+            <div id="${updateId}" class="update-time">--.--.-- --:--</div>
+            <div class="source">Source: ${spot.sourceLabel}</div>
+        </div>
     </div>`;
 
 }

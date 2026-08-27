@@ -135,25 +135,33 @@ h1 {
     border-radius: 15px;
     padding: 8px 6px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, .15);
-}
-
-.spot-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    min-height: 25px;
-    margin-bottom: 2px;
+    flex-direction: column;
 }
 
 .spot-name {
     font-size: 16px;
     font-weight: bold;
+    text-align: center;
+    min-height: 58px;
+    line-height: 1.2;
+}
+
+.compass-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spot-footer {
+    margin-top: auto;
+    text-align: right;
 }
 
 .update-time {
     font-size: 12px;
     color: #777;
-    text-align: right;
 }
 
 .update-time.stale {
@@ -211,7 +219,6 @@ h1 {
 }
 
 .source {
-    text-align: right;
     color: #999;
     font-size: 11px;
     margin-top: 2px;
@@ -1142,11 +1149,9 @@ function buildCardHtml(spot) {
     return `
     <section class="spot" data-spot-key="${spot.key}">
 
-        <div class="spot-header">
-            <div class="spot-name">${spot.name}</div>
-            <div id="${updateId}" class="update-time">--.--.-- --:--</div>
-        </div>
+        <div class="spot-name">${spot.name}</div>
 
+        <div class="compass-wrapper">
         <svg class="compass" viewBox="-20 -20 240 240">
 
             <defs>
@@ -1175,10 +1180,14 @@ function buildCardHtml(spot) {
             <text id="${gustId}" x="100" y="128" text-anchor="middle" class="gust">--</text>
 
         </svg>
+        </div>
 
         <div id="${errorId}" class="error-message"></div>
 
-        <div class="source">Source: ${spot.sourceLabel}</div>
+        <div class="spot-footer">
+            <div id="${updateId}" class="update-time">--.--.-- --:--</div>
+            <div class="source">Source: ${spot.sourceLabel}</div>
+        </div>
 
     </section>`;
 
